@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="每日學術新聞 — 科學計量學與創新管理期刊追蹤">
+<meta name="theme-color" content="#b8541c">
+<meta name="robots" content="noindex, nofollow">
+
+<title>每日學術新聞 · OpenAlex</title>
+<style>
+:root{ color-scheme: light;
+  --bg:#ffffff; --panel:#f7f7f5; --line:#e6e4df; --ink:#1f1e1c; --muted:#6f6c66;
+  --accent:#b8541c; --accent-soft:#fdf1e8; --green:#2f6f4f; --green-soft:#eaf3ee;
+  --blue:#2c4f7c; --blue-soft:#eef2f8; --plum:#6b3a63; --plum-soft:#f5eef4;
+  --teal:#1f5f5b; --teal-soft:#eaf3f2; --gold:#8a6412; --gold-soft:#fbf5e6;
+  --rose:#9b3b52; --rose-soft:#fbeef1; --slate:#33455c; --slate-soft:#f0f3f7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.68 -apple-system,"Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;}
+.wrap{max-width:900px;margin:0 auto;padding:20px 18px 60px}
+h1{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.stat b{display:block;font-size:21px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--muted)}
+.bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin:2px 0 20px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+input[type=search]{flex:1;min-width:170px;padding:7px 11px;border:1px solid var(--line);
+  border-radius:8px;font:inherit;font-size:13.5px;background:#fff;color:var(--ink)}
+select{padding:7px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13.5px;background:#fff;color:var(--ink)}
+
+.runhead{display:flex;align-items:baseline;gap:9px;margin:28px 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--line)}
+.runhead h2{font-size:15px;margin:0;font-weight:650}
+.runhead .when{font-size:12px;color:var(--muted)}
+
+.card{border:1px solid var(--line);border-radius:12px;padding:17px 19px;margin-bottom:14px;background:#fff}
+.card.fresh{border-color:#e8c3a6;background:linear-gradient(180deg,var(--accent-soft),#fff 70px)}
+.meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:8px}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--panel);
+  border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.j{background:#eef1f6;border-color:#dde2eb;color:#3c4a63;font-weight:600}
+.tag.new{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.tag.oa{background:var(--green-soft);border-color:#cfe2d6;color:var(--green)}
+.card h3{font-size:16px;margin:0 0 7px;line-height:1.44;font-weight:640}
+.card h3 a{color:inherit;text-decoration:none;border-bottom:1px solid #d9d6d0}
+.card h3 a:hover{border-color:var(--accent);color:var(--accent)}
+.au{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+
+.sec{margin-top:14px}
+.sec > h4{font-size:12px;margin:0 0 6px;letter-spacing:.06em;font-weight:700;
+  text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.sec > h4::after{content:"";flex:1;height:1px;background:var(--line)}
+.sec p{margin:0 0 8px;font-size:14px}
+.sec p:last-child{margin-bottom:0}
+.sec.gist > h4{color:var(--ink)}
+.sec.design > h4{color:var(--blue)}
+.sec.design .box{background:var(--blue-soft);border-radius:9px;padding:11px 13px;font-size:13.5px}
+.sec.crit > h4{color:var(--plum)}
+.sec.crit .box{background:var(--plum-soft);border-radius:9px;padding:11px 13px;font-size:13.5px}
+.sec.crit ul{margin:0;padding-left:19px}
+.sec.crit li{margin-bottom:6px}
+.sec.crit li:last-child{margin-bottom:0}
+.sec.crit li b{color:var(--plum)}
+
+.sec.lin > h4{color:var(--teal)}
+.sec.lin .box{background:var(--teal-soft);border-radius:9px;padding:11px 13px;font-size:13.5px}
+.sec.lin ul{margin:0;padding-left:19px}
+.sec.lin li{margin-bottom:7px}
+.sec.lin li:last-child{margin-bottom:0}
+.sec.lin li b{color:var(--teal)}
+
+.sec.fig > h4{color:var(--rose)}
+.figs{display:grid;gap:9px}
+.fig{border:1px solid var(--line);border-left:3px solid var(--rose);border-radius:0 9px 9px 0;
+  padding:11px 13px;background:#fffdfd}
+.fig .fh{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;margin-bottom:3px}
+.fig .fn{font-size:14.5px;font-weight:680}
+.fig .fr{font-size:10.5px;padding:1px 7px;border-radius:99px;background:var(--rose-soft);
+  color:var(--rose);border:1px solid #ecd3d8;white-space:nowrap}
+.fig .fr.own{background:var(--accent);border-color:var(--accent);color:#fff}
+.fig .fr.ext{background:var(--panel);border-color:var(--line);color:var(--muted)}
+.fig .fi{font-size:11.5px;color:var(--muted);margin-bottom:7px;font-variant-numeric:tabular-nums}
+.fig p{margin:0 0 6px;font-size:13.3px}
+.fig p:last-child{margin-bottom:0}
+.fig p.mu{background:var(--panel);border-radius:7px;padding:8px 10px}
+.fig p b{color:var(--rose)}
+
+.sec.can > h4{color:var(--slate)}
+dl.can{margin:0;display:grid;gap:8px}
+dl.can div{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--slate-soft)}
+dl.can dt{font-size:13.5px;font-weight:680;color:var(--slate);margin-bottom:2px}
+dl.can dd{margin:0;font-size:13.3px}
+
+details.idx{margin:0 0 18px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+details.idx summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:620;list-style:none}
+details.idx summary::-webkit-details-marker{display:none}
+details.idx summary::before{content:"▸ ";color:var(--rose)}
+details.idx[open] summary::before{content:"▾ "}
+.idxbody{padding:0 14px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:7px}
+.idxi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12.3px}
+.idxi b{display:block;font-size:13px;font-weight:660}
+.idxi span{color:var(--muted);font-size:11px}
+
+.sec.acc > h4{color:var(--gold)}
+.sec.acc .box{background:var(--gold-soft);border-radius:9px;padding:11px 13px;font-size:13.5px;
+  border:1px solid #eadfc2}
+.sec.acc ul{margin:0;padding-left:19px}
+.sec.acc li{margin-bottom:7px}
+.sec.acc li:last-child{margin-bottom:0}
+.sec.acc li b{color:var(--gold)}
+.sec.redo > h4{color:var(--accent)}
+ol.redo{margin:0;padding:0;list-style:none;counter-reset:r}
+ol.redo li{counter-increment:r;position:relative;padding:0 0 12px 34px;font-size:13.8px}
+ol.redo li:last-child{padding-bottom:0}
+ol.redo li::before{content:counter(r);position:absolute;left:0;top:1px;width:23px;height:23px;
+  border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+ol.redo li strong{display:block;font-weight:670;margin-bottom:1px}
+.fit{margin-top:12px;font-size:13px;background:var(--panel);border-left:2.5px solid var(--ink);
+  padding:9px 12px;border-radius:0 7px 7px 0;color:#3d3a35}
+.fit b{font-weight:670}
+
+details.pod{margin-top:16px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+details.pod summary{cursor:pointer;padding:11px 15px;font-size:13.5px;font-weight:620;list-style:none}
+details.pod summary::-webkit-details-marker{display:none}
+details.pod summary::before{content:"▸ ";color:var(--accent)}
+details.pod[open] summary::before{content:"▾ "}
+.podbody{padding:0 15px 14px}
+.script{font-size:13px;line-height:1.75;background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:12px 13px;max-height:420px;overflow:auto}
+.script p{margin:0 0 7px;padding:3px 6px;border-radius:5px;transition:background .15s;cursor:pointer}
+.script p:hover{background:#f4f2ee}
+.script p.now{background:#fdf1e8;box-shadow:inset 2px 0 0 var(--accent)}
+.script p.done{color:#9b968e}
+.script p .sp{display:inline-block;min-width:17px;font-weight:700;color:var(--accent)}
+.script p.b .sp{color:var(--blue)}
+.script p.hd{font-weight:680;color:var(--ink);background:var(--panel);text-align:center}
+
+.player{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;
+  background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.pbtn{padding:6px 14px;font:inherit;font-size:13px;font-weight:620;cursor:pointer;
+  background:var(--accent);color:#fff;border:0;border-radius:7px;white-space:nowrap}
+.pbtn.sec{background:var(--panel);color:var(--ink);border:1px solid var(--line);font-weight:500;padding:6px 11px}
+.pbtn:disabled{opacity:.45;cursor:default}
+.player label{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.player input[type=range]{width:82px;accent-color:var(--accent)}
+.player select{font-size:11.5px;padding:4px 6px;max-width:150px}
+.pstat{font-size:11.5px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.pwarn{font-size:12px;color:#9b3b52;background:var(--rose-soft);border-radius:7px;padding:8px 11px;margin-bottom:10px}
+button.copy{margin-top:9px;padding:6px 13px;font:inherit;font-size:12.5px;cursor:pointer;
+  background:var(--ink);color:#fff;border:0;border-radius:7px}
+button.copy:active{opacity:.7}
+.srcs{font-size:12px;color:var(--muted);margin-top:9px;word-break:break-all}
+.srcs a{color:var(--muted)}
+.empty{padding:34px;text-align:center;color:var(--muted);font-size:13.5px}
+footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:11.5px;color:var(--muted);line-height:1.75}
+@media(max-width:600px){.player{gap:6px}.pbtn{padding:9px 15px;font-size:14px}.player select{max-width:120px}.script{max-height:60vh}.stats{grid-template-columns:repeat(2,1fr)}.wrap{padding:16px 13px 50px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>每日學術新聞</h1>
+  <div class="sub" id="sub"></div>
+
+  <div class="stats">
+    <div class="stat"><b id="s-done">0</b><span>已整理</span></div>
+    <div class="stat"><b id="s-pool">0</b><span>2026 存量池</span></div>
+    <div class="stat"><b id="s-j">15</b><span>追蹤期刊</span></div>
+    <div class="stat"><b id="s-eta">—</b><span>預估追完</span></div>
+  </div>
+  <div class="bar"><i id="prog" style="width:0%"></i></div>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="搜尋標題、方法、主題…">
+    <select id="fj"><option value="">全部期刊</option></select>
+    <select id="fn"><option value="">全部</option><option value="1">只看當日最新</option><option value="oa">只看開放取用</option></select>
+  </div>
+
+  <div id="people"></div>
+  <div id="feed"></div>
+
+  <footer>
+    資料來源：OpenAlex API（<code>publication_date</code> 排序,新→舊)。追蹤 15 本期刊,每日 08:00 / 13:00 / 20:00 各推 3 篇。<br>
+    <span class="tag new" style="display:inline-block">當日最新</span> 表示發表日在該輪執行日前後 1 天內,已優先插隊。<br>
+    「研究全貌」為 AI 依 OpenAlex 摘要與後設資料改寫,非原文轉載。「學者視角」與「重做藍圖」是評論與研究設計建議,不代表原作者立場;引用前請以期刊原文為準。
+  </footer>
+</div>
+
+<script id="digest-data" type="application/json">
+{
+ "updated": "2026-08-08 08:00",
+ "pool": 1598,
+ "journals": [
+  {
+   "id": "S148561398",
+   "name": "Scientometrics"
+  },
+  {
+   "id": "S205292342",
+   "name": "Journal of Informetrics"
+  },
+  {
+   "id": "S20781845",
+   "name": "Journal of Scientific & Industrial Research"
+  },
+  {
+   "id": "S201446958",
+   "name": "Health Research Policy and Systems"
+  },
+  {
+   "id": "S2734814886",
+   "name": "Digital Scholarship in the Humanities"
+  },
+  {
+   "id": "S9731383",
+   "name": "Research Policy"
+  },
+  {
+   "id": "S93630570",
+   "name": "Journal of Product Innovation Management"
+  },
+  {
+   "id": "S70698675",
+   "name": "Technovation"
+  },
+  {
+   "id": "S154533451",
+   "name": "IEEE Transactions on Engineering Management"
+  },
+  {
+   "id": "S39307421",
+   "name": "Technological Forecasting and Social Change"
+  },
+  {
+   "id": "S130699561",
+   "name": "Technology Analysis and Strategic Management"
+  },
+  {
+   "id": "S43637407",
+   "name": "R&D Management"
+  },
+  {
+   "id": "S47993699",
+   "name": "Journal of Engineering and Technology Management"
+  },
+  {
+   "id": "S152897404",
+   "name": "Research-Technology Management"
+  },
+  {
+   "id": "S171720814",
+   "name": "International Journal of Technology Management"
+  }
+ ],
+ "runs": [
+  {
+   "date": "2026-08-08",
+   "slot": "早班",
+   "time": "08:00",
+   "papers": [
+    {
+     "wid": "W7196924323",
+     "title": "Gender analysis of the authors of the German-language pharmacy journal Pharmakon from 1972 to 2021",
+     "journal": "Scientometrics",
+     "date": "2026-08-07",
+     "authors": "Mira Ober, Roland Seifert",
+     "doi": "https://doi.org/10.1007/s11192-026-05766-z",
+     "oa": true,
+     "fresh": true,
+     "refs": 36,
+     "topics": [
+      "Sex and Gender in Healthcare",
+      "scientometrics and bibliometrics research"
+     ],
+     "gist": [
+      "研究對象是德國藥學會（DPhG）的會員刊物 Pharmakon（前身為 Pharmazie in unserer Zeit），一本德語、非同儕審查的藥學期刊。作者把 1972 到 2021 整整五十年、1,577 篇文章、2,509 位作者全部納入普查，追蹤女性作者比例的長期軌跡。這是普查而非抽樣——這個區別在後面會變得很重要。",
+      "核心結果分三層。總量層：五十年間女性作者僅佔 26%。趨勢層：從 1970 年代初的約 5% 上升到 2020 年的約 50%，卡方檢定 p = 0.00004，斜率非常陡。分層層——這也是全文最有價值的一層——2020 年是史上第一次女性第一作者多於男性，但在教授這個最高學術職級上，女性人數仍遠少於男性。底部翻轉了，頂端沒有。",
+      "兩個附帶發現常被略過但其實有意義：每篇論文的平均作者數在五十年間持續上升，這與整個科學界的合著趨勢一致；非藥學背景的作者投稿變多，作者把它讀成跨領域交流增加的訊號。",
+      "作者最後把研究定位成政策工具，明確指向政治部門、大學與藥師公會的性別平等措施——這個定位選擇會直接影響它在 Scientometrics 的落點，後面會談。"
+     ],
+     "design": "普查式單一期刊縱貫設計。分析單位是 authorship（作者—論文配對）而非作者個人。時間軸切成區段後用卡方檢定比較女性佔比是否隨期間變動，另外做了作者位置（第一作者）與學術職級（教授）的分層描述。從參考文獻可確認性別判定採姓名推斷服務——它引用了 Santamaría 與 Mihaljević 2018 年那篇 name-to-gender 推斷服務的比較基準研究，這是這條方法路線的標準引用。職級如何編碼摘要未交代，依德語期刊署名欄慣例，多半是從 Prof. Dr. 這類頭銜人工編碼。",
+     "lineage": [
+      "<b>主脈絡是大規模書目計量性別研究。</b>它引用了這條線最核心的三塊基石：Larivière 等人 2013 年發表在 Nature 的〈Global gender disparities in science〉、West 等人 2013 年的〈The Role of Gender in Scholarly Authorship〉、以及 Huang 等人 2020 年在 PNAS 的跨國跨學科歷史比較。這三篇定義了「用作者署名資料量化性別落差」的整套語法。",
+      "<b>但它的研究設計真正的母本是 Jagsi 等人 2006 年在 NEJM 的〈The Gender Gap in Authorship of Academic Medical Literature — A 35-Year Perspective〉。</b>那篇用單一領域、35 年時窗、第一與末位作者分層，這篇幾乎是把同一套設計搬到德語藥學並延長到 50 年。認出這個對應關係，才看得懂它為什麼選擇這個結構。",
+      "<b>職級分層的理論來源是 Shaw 與 Stanton 2012 年的〈Leaks in the pipeline〉。</b>那篇的核心主張是必須把「人口慣性」（demographic inertia，也就是單純的世代替換）與「持續存在的性別差異」分開——這一點很關鍵，後面會變成最強的批判點。",
+      "<b>偏誤機制的引用來自實驗傳統</b>：Moss-Racusin 等人 2012 年的科學教師隱性偏誤實驗、Knobloch-Westerwick 等人的 Matilda 效應、以及 Etzkowitz 的《Athena Unbound》。這些是用來解釋「為什麼會有落差」，而不是用來檢驗——它們在文中扮演的是論述背景而非分析框架。",
+      "<b>還引了 Woolley 等人 2010 年的集體智慧研究</b>，這是典型的「多樣性有好處」正當化引用，用來支撐政策結論。這類引用在審稿時經常被視為修辭多於證據。",
+      "<b>沒有進入對話的一塊</b>：Holman 等人 2018 年的〈How long until women are equally represented?〉有被引，那篇提供了外推達到平權年份的模型。這篇有 50 年的資料卻沒有做同樣的外推——這是一個現成、低成本、審稿人會期待的延伸。"
+     ],
+     "critique": [
+      "<b>「小而完整」是真正的巧思。</b>選一本可以做到 100% 普查的封閉期刊，換來五十年無缺漏的縱貫比較。在動輒撈 WoS 幾百萬筆、卻永遠有覆蓋偏誤與消歧誤差的稿件池裡，這種資料策略反而有辨識度。",
+      "<b>最致命的一點：它引了 Shaw 與 Stanton，卻沒有做人口慣性分解。</b>女性作者比例從 5% 升到 50%，有多少來自「新進世代的性別組成改變」（純粹的人口慣性），又有多少來自「同世代女性的留存與晉升改善」？不分解這兩者，就無法主張情況真的變好了。這篇自己引用的文獻已經把這個要求擺在桌上，卻沒有回應——審稿人如果是這條線的人，第一封信必問。",
+      "<b>統計工具配不上資料的解析度。</b>把時間切成區段做卡方，等於把連續趨勢降格成類別比較，五十年的解析度被浪費。年份為連續變項的邏輯迴歸可以直接估出「每年女性作者的勝算比」，資訊量與跨研究可比較性都高一個檔次。既然引了 Holman 的外推研究，模型化趨勢本來就是順理成章的下一步。",
+      "<b>外部效度的邊界比表面上更窄。</b>非同儕審查刊物的投稿篩選機制與研究型期刊根本不同——它更接近專業社群的溝通平台而非研究產出的競技場。所以這裡的比例不能被讀成「德國藥學界的研究生產力性別結構」。原文有意識到，但標題與政策結論的語氣仍偏強。",
+      "<b>分母定義必須講清楚。</b>「26% 的作者是女性」與「26% 的作者次數是女性」是兩個不同的量；若高產作者的性別分布不均，兩者會顯著分歧。這是技術審稿的第一個問題。",
+      "<b>職級分層是最有價值的發現，卻報得最單薄。</b>底部翻轉、頂端未動，是 leaky pipeline 的經典形狀。但要主張這件事，需要的是分職級各自的時間序列，而不是一個橫斷面的比較。現在的呈現方式讓最好的發現看起來像個附註。"
+     ],
+     "accept": [
+      "<b>資料的不可替代性是主要籌碼。</b>Scientometrics 對「又一篇大資料庫性別分析」的邊際興趣已經很低，但「一本期刊五十年的完整普查」是別人沒有、也難以複製的資產。稿件能站住，靠的是這個。",
+      "<b>Jagsi 的 NEJM 設計提供了正當性擔保。</b>沿用一個已被高影響力期刊背書的研究結構，審稿人不需要重新評估設計是否合理——這在方法保守的期刊是很實際的優勢。",
+      "<b>引用 Santamaría 與 Mihaljević 的姓名推斷基準研究，等於預先擋掉一個標準攻擊。</b>性別推斷的效度是這類稿件最常見的拒稿理由；主動引用該領域的比較基準，訊號是「我知道這個問題」。",
+      "<b>德語、非英語語境本身有稀缺價值。</b>Scientometrics 近年明顯偏好非英美中心的樣本，這篇的語言與國別位置正好落在編輯偏好上。",
+      "<b>開放取用（CC-BY）與政策取向的結尾，提高了可引用性。</b>對期刊而言這是實際考量；把結論寫給政治部門、大學與公會，等於預告了引用來源會超出學術圈。",
+      "<b>反過來說，門檻是「它沒有做的那件事」。</b>如果審稿人指定要做人口慣性分解或趨勢模型化，這篇的貢獻定位會從「發現」降級為「描述」。它能被接受，很可能是因為資料的稀缺性壓過了分析的保守性——這個交換條件不是每次都成立。"
+     ],
+     "redo": [
+      {
+       "h": "把單一期刊升級成「焦點案例 + 對照群」",
+       "t": "保留 Pharmakon 當 focal case，但用 OpenAlex 的 language:de 加上藥學／藥理相關 topic ID，把整個德語藥學期刊群抓下來當 benchmark，並區分同儕審查與非同儕審查兩類。這樣既留住普查的乾淨度，又能回答「這本是否特殊」以及「審查機制是否本身就是性別過濾器」——後者是原研究完全沒碰、但資料唾手可得的問題。"
+      },
+      {
+       "h": "性別推斷三角驗證，並強制報敏感度",
+       "t": "同時跑 Genderize.io、NamSor、Gender API，一致者取高信度；不一致與無法判定者用 ORCID 自報補；剩餘的前 200 位高產作者人工查驗。務必報 unknown 率，並做敏感度分析：把 unknown 全當男性、全當女性、按比例分配，看結論是否翻轉。既然要引 Santamaría 與 Mihaljević，就該把他們的基準真的執行一遍，而不只是引用。"
+      },
+      {
+       "h": "職級改用 academic age 當主要操作化",
+       "t": "頭銜編碼跨期刊時會大量缺失。改用作者首次發表年推算學術年齡，切早期／中期／資深三段：全樣本可得、跨國可比、也避開德語頭銜制度的特殊性。教授身分保留為第二套操作化，用於穩健性檢驗。兩套結果若一致，職級分層的主張就穩了。"
+      },
+      {
+       "h": "做人口慣性分解——這是整個重做計畫的核心",
+       "t": "依 Shaw 與 Stanton 的邏輯建立世代（cohort）變數：以作者首次發表年定義進入世代，然後把女性比例的變化拆成兩個成分，一是各世代的性別組成差異（人口慣性），二是同一世代內隨時間的留存與晉升差異（持續性差異）。可用 age–period–cohort 分解或簡化的世代固定效果模型。這一步做完，論文的貢獻等級會整個改變——從「比例上升了」變成「上升有多少是真的改善」。"
+      },
+      {
+       "h": "換成混合效果邏輯迴歸",
+       "t": "因變數為該 authorship 是否女性；固定效果放年份（連續，加 natural spline 讓非線性趨勢現形）、作者位置、學術年齡、世代、是否跨領域；隨機截距放期刊與作者，處理同一人多次出現的非獨立性。報勝算比與 95% 信賴區間。再用模型做 Holman 式的外推：依現有斜率，教授層級要幾年才會達到平權。這張外推圖會是全文最容易被引用的一張。"
+      },
+      {
+       "h": "first / last / corresponding 三個位置分開建模",
+       "t": "第一作者代表執行者，通訊作者代表責任歸屬，末位作者在生醫傳統代表資深主導者。leaky pipeline 最靈敏的訊號在末位與通訊，而非第一作者。把三條軌跡畫在同一張圖上，落差本身就是論文的主圖，也直接回應 Jagsi 那篇的分層傳統。"
+      },
+      {
+       "h": "要超越描述，就找外生衝擊",
+       "t": "純描述在 Scientometrics 已經很擁擠。以德國 DFG 的研究導向性別平等標準（2008 起）為斷點做中斷時間序列；或以奧地利、瑞士的德語藥學期刊為對照組做差異中之差異，檢驗政策是否真的改變了斜率。關鍵在於論證指派機制的外生性——若無法論證，就誠實降級為描述性關聯，不要硬做因果措辭。"
+      },
+      {
+       "h": "穩健性與可重製包一次做足",
+       "t": "排除 review、editorial、correction；對年度比例做 bootstrap 信賴區間；檢驗結論對性別推斷信心閾值（0.7／0.8／0.9）的敏感度；報告 unknown 的分布是否隨時間變動（早期資料的姓名推斷通常更差，這會製造假趨勢）。最後把清理腳本與去識別化資料放上 OSF 或 Zenodo。Scientometrics 近年對可重製性的要求明顯收緊，這一包會直接影響第一印象。"
+      }
+     ],
+     "fit": "純擴充版（多期刊 + 嚴謹性別推斷 + 迴歸模型）落在 <b>Scientometrics</b> 或 <b>Journal of Informetrics</b> 合理。加上人口慣性分解，可以挑戰 <b>Quantitative Science Studies</b>——那本特別吃方法上的分解與識別。再補上 ITS 或 DiD 的政策評估，<b>Research Policy</b> 才會開門，門檻在於能否說清楚政策的指派機制。",
+     "figures": [
+      {
+       "name": "Roland Seifert",
+       "role": "本篇作者",
+       "inst": "Hannover Medical School (MHH), 德國",
+       "stat": "807 篇 · 14,965 次被引 · h=61",
+       "famous": "分子藥理學出身,主攻 G 蛋白偶聯受體、組織胺受體與環核苷酸訊息傳遞。但真正讓他在德語藥學圈有影響力的是另一件事——他在 Naunyn-Schmiedeberg's Archives of Pharmacology 累積了 131 篇,遠超他其他任何發表管道,這種集中度通常對應編輯職務。他長年寫大量關於發表倫理、期刊治理、藥理學教育的評論性文章。",
+       "must": "看到一位資深實驗藥理學家跑來 Scientometrics 發性別書目計量,不要以為是跨界玩票。這是「領域內部人做自我檢視」的典型模式——他有這本期刊五十年的近用權與制度理解,這正是外部書目計量學者拿不到的東西。這類作者的稿件,強項永遠是資料近用與脈絡知識,弱項永遠是計量方法的精緻度。審稿時你該把火力放在後者。"
+      },
+      {
+       "name": "Vincent Larivière",
+       "role": "被引經典",
+       "inst": "Université de Montréal, 加拿大",
+       "stat": "613 篇 · 23,251 次被引 · h=73",
+       "famous": "當代科學計量學最核心的產出者之一。2013 年與 Sugimoto 等人在 Nature 發表〈Bibliometrics: Global gender disparities in science〉,用全球署名資料一次定義了「性別書目計量」這個子領域的做法。他也是引文行為、開放取用、期刊經濟學、學術勞動分工的重要研究者,並長期批評影響因子的濫用。",
+       "must": "如果你要投任何跟性別、作者貢獻、引文不平等有關的稿件,他的 2013 Nature 那篇幾乎是強制引用——不引反而會被問。更重要的是理解他的方法路數:大規模全樣本 + 描述性指標 + 政策訊息。你若要做出區隔,就得在因果識別或機制上超越他,而不是在資料量上跟他比。"
+      },
+      {
+       "name": "Cassidy R. Sugimoto",
+       "role": "被引經典",
+       "inst": "Georgia Institute of Technology, 美國",
+       "stat": "315 篇 · 13,593 次被引 · h=53",
+       "famous": "Larivière 的長期共同作者,2013 Nature 那篇的共同主導者。她的獨立貢獻在科學勞動力的多樣性、學術流動、altmetrics 的效度批判,以及科學政策。曾任美國國家科學基金會相關職務,是把書目計量推向科學政策實務的代表人物。",
+       "must": "她與 Larivière 合著的《Measuring Research: What Everyone Needs to Know》是這個領域最好的入門書,適合拿來校準自己的概念語彙。另外注意她對 altmetrics 的批判立場——如果你的稿件用了社群媒體指標,她那條線的質疑你必須先回答。"
+      },
+      {
+       "name": "Jevin D. West",
+       "role": "被引經典",
+       "inst": "University of Washington, 美國",
+       "stat": "162 篇 · 6,764 次被引 · h=35 · 近兩年篇均被引 9.34",
+       "famous": "2013 年〈The Role of Gender in Scholarly Authorship〉的作者之一,與 Carl Bergstrom 共同開發 Eigenfactor 期刊評價指標。近年轉向資訊生態與錯誤資訊研究,合著暢銷書《Calling Bullshit》。近兩年篇均被引 9.34 在這個領域是異常高的數字,代表他目前的產出正處於高影響力期。",
+       "must": "他示範了一件很值得學的事:同一批署名資料,可以用來做性別分析,也可以用來做期刊評價指標。資料資產的重複利用是這個領域高效產出的關鍵。另外 Eigenfactor 的邏輯——用隨機漫步而非單純計數來衡量重要性——是你討論任何引文指標時都該具備的背景。"
+      },
+      {
+       "name": "Reshma Jagsi",
+       "role": "被引經典",
+       "inst": "Emory University, 美國",
+       "stat": "879 篇 · 33,170 次被引 · h=92",
+       "famous": "放射腫瘤科醫師,同時是醫學界性別平等研究最具影響力的聲音。2006 年在 NEJM 發表的〈The Gender Gap in Authorship of Academic Medical Literature — A 35-Year Perspective〉,建立了「單一領域 × 長時窗 × 作者位置分層」這個沿用至今的研究模板——本篇的設計骨架就是從這裡來的。她後續也研究學術醫學界的薪酬差距與性騷擾。",
+       "must": "這篇是本日第一篇論文的真正母本,值得完整讀一次。重點不在結果,而在它如何用一個極簡的設計說出有力的話:只看第一作者與末位作者的比例隨時間變化,就足以支撐一篇 NEJM。設計的簡潔本身就是說服力。"
+      },
+      {
+       "name": "Ludo Waltman",
+       "role": "領域必識 · 本篇未引",
+       "inst": "CWTS, Leiden University, 荷蘭",
+       "stat": "413 篇 · 51,440 次被引 · h=56",
+       "famous": "萊頓大學科學技術研究中心（CWTS）的核心人物,VOSviewer 的共同開發者——這套軟體幾乎是全世界做書目計量視覺化的預設工具。他也是萊頓宣言（Leiden Manifesto）與負責任研究評價運動的重要推手,並長期參與 CWTS Leiden Ranking 的方法設計。",
+       "must": "他不在這篇的參考文獻裡,但你不可能不認識他。兩個原因:第一,你若用 VOSviewer 做過任何圖,那就是他的東西;第二,他代表這個領域的規範性轉向——從「怎麼測」轉向「該不該這樣測、測了會造成什麼行為扭曲」。任何評價指標類的稿件,審稿人腦中的標準往往就是萊頓宣言那十條。"
+      }
+     ],
+     "canon": [
+      {
+       "term": "Leaky pipeline（漏水管線）",
+       "t": "描述女性在學術階梯上逐級流失的比喻:大學部性別平衡,但越往博士、博後、助理教授、正教授走,女性比例越低。這篇的核心發現——第一作者已翻轉、教授層級未動——就是這個形狀。注意這個比喻近年受到批評,因為它暗示只有一條線性路徑,忽略了離開學界不必然是「流失」。寫作時用它要小心措辭。"
+      },
+      {
+       "term": "Demographic inertia（人口慣性）",
+       "t": "Shaw 與 Stanton 2012 年提出的關鍵區分。若女性大量進入某領域,即使完全沒有偏誤,資深層級的女性比例也會因為晉升需要時間而落後數十年。所以看到「資深層女性少」不能直接推論有歧視——必須先扣掉人口慣性,剩下的才是真正的持續性差異。這是本日第一篇最大的分析缺口,也是你審這類稿件時最有殺傷力的一個問題。"
+      },
+      {
+       "term": "Matilda effect（瑪蒂達效應）",
+       "t": "Margaret Rossiter 提出的概念,指女性科學家的貢獻被系統性地歸功於男性同事,是 Matthew effect（馬太效應,強者越強）的性別版本。Knobloch-Westerwick 等人 2013 年把它帶進科學傳播的實驗研究。這是解釋「為什麼有落差」的機制詞彙,不是測量工具——引用時要分清楚你是在描述現象還是在檢驗機制。"
+      },
+      {
+       "term": "Name-to-gender inference（姓名性別推斷）",
+       "t": "用姓名推測作者性別的技術,是所有大規模性別書目計量的地基,也是它最脆弱的一塊。Santamaría 與 Mihaljević 2018 年做了主流服務的系統性比較基準。三個實務要點:華人與韓國姓名的判定率極差、跨文化的偏誤不對稱、以及早期文獻常只有姓氏縮寫導致 unknown 率隨時間變動——最後這點會直接製造出假的時間趨勢。"
+      },
+      {
+       "term": "作者位置的語意（authorship position）",
+       "t": "第一作者代表主要執行者,通訊作者代表責任歸屬與資源掌握,末位作者在生醫傳統代表資深主導者(實驗室負責人)。同一批資料看不同位置會得到完全不同的結論,而 leaky pipeline 最靈敏的訊號通常在末位與通訊,不在第一作者。跨領域比較時要特別小心——數學與經濟學多用字母序,末位作者不具備資深語意。"
+      },
+      {
+       "term": "Author disambiguation（作者消歧）",
+       "t": "把同名不同人分開、把同人不同寫法合併,是所有作者層級分析的前提。這個問題有多嚴重?你可以現場驗證:在 OpenAlex 上搜尋本篇作者 Roland Seifert,會出現十個以上的實體,主檔 807 篇,其餘散落 1 到 16 篇不等。任何做作者生產力、流動、合作網絡的研究,若沒有交代消歧策略,結論的可信度就要打折。ORCID 是目前最好的錨,但覆蓋率仍不足以單獨依賴。"
+      }
+     ]
+    },
+    {
+     "wid": "W7196998450",
+     "title": "Digital platform archetypes as catalysts for circular economy innovation in technology industries",
+     "journal": "Technovation",
+     "date": "2026-08-06",
+     "authors": "（Technovation, 2026）",
+     "doi": "https://doi.org/10.1016/j.technovation.2026.103685",
+     "oa": true,
+     "fresh": true,
+     "refs": 89,
+     "topics": [
+      "Digital Platforms and Economics",
+      "Service and Product Innovation"
+     ],
+     "gist": [
+      "問題意識是：數位平台正在重塑傳統線性價值鏈，而且越來越被當成循環經濟落地的主要推手——但不同的平台設計，會導向不同的循環結果嗎？作者以 Apple、Samsung、Xiaomi、Dell 四家電子製造商做比較多案例分析，歸納出兩種平台原型。",
+      "第一種是「高階整合生態系」，以 Apple 與 Samsung 為代表：鎖定高價值消費者區隔，強調零組件整合與生命週期控制，平台治理封閉且自有。這一路的循環做法優先落在維修、翻新與延壽，而且全部發生在高度整合的產品—服務系統之內。",
+      "第二種是「開放式生態系協作者」，以 Xiaomi 與 Dell 為代表：把夥伴與使用者拉進來共同參與，重心放在資產管理、服務模組化，以及面向價格敏感消費者與企業客戶的可負擔性。",
+      "結論是平台設計會直接形塑循環成效，而治理結構、商業模式與數位基礎設施三者，必須與市場定位及使用者需求對齊。注意這裡的「形塑成效」是敘事層次的宣稱——成效端並未被量化測量，這一點後面會展開。"
+     ],
+     "design": "比較多案例研究，四個案例，以平台治理模式做理論抽樣，再用跨案例型態比對歸納原型。從參考文獻可以確認方法組合：Eisenhardt 1989 與 Eisenhardt & Graebner 2007 提供案例建構理論的骨架，Gioia 等人 2012 提供編碼與資料結構的嚴謹度標準，Braun & Clarke 2006 提供主題分析程序，Bowen 2009 的〈Document Analysis as a Qualitative Research Method〉則明確指向以文件為主要資料來源。另外它同時引用了 PRISMA 2009 與 PRISMA 2020，代表案例選擇之前先做過系統性文獻回顧。",
+     "lineage": [
+      "<b>三條文獻線在這裡交會。</b>第一條是循環經濟的概念界定，錨點是 Kirchherr 等人 2017 年分析 114 個循環經濟定義的那篇；第二條是產品服務系統，錨點是 Tukker 2013 年的 PSS 與資源效率回顧；第三條是生態系理論，錨點是 Jacobides、Cennamo 與 Gawer 2018 年的〈Towards a theory of ecosystems〉。這三條線各自成熟，但很少被同時拉進同一個分析框架——這是它的定位空間。",
+      "<b>「原型」這個輸出形式直接承襲 Bocken 等人的永續商業模式原型研究。</b>那篇 2013 年的〈A literature and practice review to develop sustainable business model archetypes〉是這一圈的通用貨幣。用 archetype 當結論格式，等於選了一個目標讀者立刻認得的容器。",
+      "<b>方法論上它站在 Eisenhardt 與 Gioia 的雙重傳統上</b>：Eisenhardt 給的是多案例比較與型態歸納的邏輯，Gioia 給的是編碼透明度與資料結構圖的展示規範。這兩套在管理學定性研究裡是不同門派，同時引用意味著它想同時滿足「型態要有對比」與「編碼要看得見」兩種審稿期待。",
+      "<b>Bowen 的文件分析被引用，是理解這篇侷限的關鍵線索。</b>它證實主要證據來自企業文件——永續報告、產品文件、公開揭露——而不是第一手訪談。這不必然是缺點（文件有可追溯性），但它決定了哪些宣稱站得住、哪些站不住。",
+      "<b>PRISMA 的出現值得注意。</b>在一篇多案例研究裡引用系統性回顧的報告規範，通常代表案例選擇前有一段結構化的文獻篩選。這是對「為什麼是這四家」這個必問問題的預防性防守。",
+      "<b>一個明顯的張力：引了 Tukker 的 PSS 回顧，卻沒有沿用 PSS 既有的產品導向／使用導向／結果導向三分法，而是自創了兩個原型。</b>審稿人會問為什麼——若新分類無法對映或超越既有分類，這個選擇就需要更強的辯護。"
+     ],
+     "critique": [
+      "<b>每個原型只有兩個案例，承重不足。</b>四案切成兩型，等於每格 n=2。Eisenhardt 建議 4–10 個案例是有道理的：型態要被稱為原型，必須先在同型內看到重複、在異型間看到對比，n=2 兩邊都撐不住。這是全文最容易被要求補資料的地方。",
+      "<b>文件為主的資料策略，讓漂綠風險成為活的效度威脅。</b>Bowen 的方法論被引用，但文件分析的前提是文件具有可追溯性與非反應性——企業自願揭露的永續報告恰好兩者都不滿足，它就是為了塑造形象而生產的。這不是限制段落可以打發的，需要用不受企業控制的資料來源做交叉驗證。",
+      "<b>原型是類型學，不是機制。</b>「平台設計影響循環成效」這句話裡，成效端沒有被測量。沒有回收率、翻新機營收佔比、零件供應年限、實際服役壽命，因果宣稱就只能停在敘事層次。這也是為什麼結論讀起來像是描述而非解釋。",
+      "<b>內生性直指核心。</b>Apple 的高階定位可能同時導致封閉平台與延壽策略——平台原型跟市場定位根本不是彼此獨立的自變數。要主張原型有解釋力，得先處理這個共同前因，否則「原型」只是「市場定位」的另一個名字。",
+      "<b>案例池全是既有大廠，缺席者恰好是關鍵行為者。</b>iFixit、Back Market、企業端的 ITAD 業者——真正把循環做成生意的那一群——完全不在樣本裡。這使得地圖只畫了原廠視角的一半，而且是比較不激進的那一半。",
+      "<b>自創分類與既有分類的關係沒有交代。</b>引了 Tukker 卻不用 PSS 三分法，也沒說明兩者如何對映。新分類要能取代舊分類，得證明它切出了舊分類切不出來的差異。"
+     ],
+     "accept": [
+      "<b>它選對了容器。</b>用 archetype 當輸出形式，直接對上 Bocken 傳統在 Technovation、TFSC、JCP 這一圈建立的閱讀習慣。編輯與審稿人不需要適應一個陌生的結論格式——這在定性稿件的初審階段是很實際的優勢。",
+      "<b>Gioia 方法論的存在幾乎是 Technovation 定性稿件的入場券。</b>它意味著文中會有正式的資料結構圖，把一階概念、二階主題、聚合維度攤開。沒有這張圖的歸納型稿件，近年在這本期刊的存活率明顯偏低。",
+      "<b>PRISMA 提供了案例選擇的程序正當性。</b>「為什麼是這四家」是多案例研究被拒的第一大理由；用系統性文獻回顧當前置程序，把選擇從研究者判斷轉成可複核的流程。",
+      "<b>案例本身有讀者吸引力。</b>Apple、Samsung、Xiaomi、Dell 是所有讀者都有直覺的公司。這在期刊層面會轉化成下載與引用——編輯對此不會沒有感覺。",
+      "<b>三條文獻線的交會位置本身就是稀缺的。</b>循環經濟、產品服務系統、生態系理論各自都很擁擠，但同時處理三者的稿件不多。定位的新意可以在某種程度上補償證據的薄度。",
+      "<b>誠實地說：這篇能過，很可能是因為「框架貢獻」被當成主要貢獻，而非「實證發現」。</b>如果審稿人堅持要求可量化的循環績效指標，四個案例的文件分析撐不起來。它的通過條件是編輯接受它作為概念性、探索性的框架建構——這是一個不穩定的位置，複製這條路徑要有心理準備。"
+     ],
+     "redo": [
+      {
+       "h": "案例數擴到 12–16，並補上缺席的角色",
+       "t": "用理論抽樣讓每個原型至少 3–4 案，同時納入三類目前缺席的行為者：挑戰者品牌、第三方維修平台（iFixit、Back Market）、B2B 的 IT 資產處置業者。原型的說服力來自同型內重複與異型間對比，這兩件事都需要案例數。同時保留 Apple 與 Dell 當作與原研究可比較的錨點案例。"
+      },
+      {
+       "h": "資料三角化——這是修補漂綠風險的唯一辦法",
+       "t": "三條腿：一是半結構訪談，每案訪 3–5 位平台治理、逆物流、售後主管；二是不受企業控制的客觀資料，包括 iFixit 可修復性評分、歐盟生態設計法規的合規文件、維修與翻新相關 CPC 分類的專利、第三方拆解報告；三是使用者端行為痕跡，例如二手市場價格衰減曲線當作實際服役壽命的 proxy。後兩條特別重要，因為它們正好補上文件分析的非反應性前提。"
+      },
+      {
+       "h": "先處理與 PSS 既有分類的關係，再談新原型",
+       "t": "把 Tukker 的產品導向／使用導向／結果導向三分法拿來當基準，先把 12–16 個案例編碼進去，看它切不切得開。若切得開，就沒必要自創；若切不開，那個切不開的地方就是新分類的立論基礎。這一步會讓新原型從「研究者的選擇」變成「資料逼出來的必要」。"
+      },
+      {
+       "h": "把「平台原型」拆成可測維度，讓分類從資料長出來",
+       "t": "不要先驗二分。操作化成連續維度：治理封閉度（API 開放程度、第三方零件與工具授權政策）、模組化程度、逆物流整合度、資料權屬歸誰。然後用集群分析或 fsQCA 讓原型自己浮現。這同時解決了「n=2 撐不起原型」與「內生性」兩個問題——因為維度是獨立測量的，不是從市場定位推導的。"
+      },
+      {
+       "h": "補上循環績效的結果變數",
+       "t": "至少四個可查證指標：官方翻新機佔營收比、產品平均服役年限、回收與以舊換新率、零件保證供應年限。有了結果變數，「平台設計影響循環成效」才從敘事命題變成可檢驗命題。這也是把稿件從框架貢獻推向實證貢獻的關鍵——前者的接受條件不穩定，後者才站得住。"
+      },
+      {
+       "h": "用 fsQCA 處理中型樣本",
+       "t": "n 在 12–20 之間，迴歸太小、單純個案又太散，模糊集質性比較分析正好落在這個甜蜜點。要問的是：治理封閉度 × 模組化 × 市場定位的哪些組態，構成高循環績效的充分條件。同時報告 equifinality——不同組態可能通向同樣的高績效，這比單一原型的敘事更貼近實際，也更有理論意思。"
+      },
+      {
+       "h": "用 Right to Repair 當外生衝擊做因果識別",
+       "t": "歐盟維修權相關規範的生效時點，提供了不受廠商策略控制的斷點。比較同一款產品在歐盟與非歐盟市場的維修可得性、零件價格、服役壽命變化，做差異中之差異。這一步能把稿件從「歸納型態」升級成「識別效果」，也是唯一能正面回應內生性質疑的設計。"
+      },
+      {
+       "h": "主動搜集反例並預先聲明搜尋範圍",
+       "t": "刻意去找兩種 disconfirming case：封閉平台但循環績效差的，以及開放平台但循環績效好的。原型類論文最常被要求補的就是這個。找不到要說明搜尋範圍與判準；找得到的話，反例往往比主結論更有意思——因為它會逼出邊界條件。"
+      }
+     ],
+     "fit": "定性擴充版（案例數 + 訪談 + 客觀指標 + 與 PSS 分類的對話）落在 <b>Technovation</b> 或 <b>JPIM</b> 很合適。加上 fsQCA 與可查證績效指標，可以往 <b>Journal of Cleaner Production</b> 或 <b>Business Strategy and the Environment</b> 推。若主打 Right to Repair 的 DiD 政策效果，<b>Research Policy</b> 是最對的門，但門檻是要能處理跨市場產品配對的可比性。",
+     "figures": [
+      {
+       "name": "Kathleen M. Eisenhardt",
+       "role": "被引經典",
+       "inst": "Stanford University, 美國",
+       "stat": "207 篇 · 167,488 次被引 · h=85",
+       "famous": "管理學方法論最有影響力的人物之一。1989 年〈Building Theories from Case Study Research〉與 2007 年與 Graebner 合著的〈Theory Building From Cases〉,合計被引超過三萬次,定義了「多案例研究如何建構理論」的標準做法。她本人的實質研究在動態能力、簡單規則策略、高速環境下的決策。",
+       "must": "兩個必記的操作準則。第一,案例數建議 4 到 10——少於 4 難以看出型態,多於 10 難以掌握深度。本日這篇只有 4 案卻切成 2 型,壓在下限。第二,理論抽樣不是隨機抽樣:案例要為了填補理論空白而選,而且要能形成極端對比。她 2007 年那篇特別強調「案例選擇的邏輯必須明說」,這正是審稿人最常追的一句。"
+      },
+      {
+       "name": "Dennis A. Gioia",
+       "role": "被引經典",
+       "inst": "Pennsylvania State University, 美國",
+       "stat": "145 篇 · 57,933 次被引 · h=61",
+       "famous": "Gioia 方法論的創立者。2012 年〈Seeking Qualitative Rigor in Inductive Research〉提出了那張著名的資料結構圖——一階概念（受訪者語言）、二階主題（研究者理論語言）、聚合維度——把質性編碼的過程攤開給讀者檢視。他的實質研究在組織認同與意義建構(sensemaking)。",
+       "must": "這是本日三篇裡唯一橫跨兩篇的人物:第二篇引他的方法論,第三篇引他 2000 年的組織認同研究。方法論上你要知道的是,那張資料結構圖已經從「加分項」變成管理學質性稿件的入場券——沒有它,審稿人會直接懷疑編碼過程不透明。但也要知道它的批評:圖表化的嚴謹可能只是形式,一階到二階的躍遷仍然高度依賴研究者判斷。"
+      },
+      {
+       "name": "Michael G. Jacobides",
+       "role": "被引經典",
+       "inst": "London Business School, 英國",
+       "stat": "134 篇 · 7,817 次被引 · h=30",
+       "famous": "2018 年與 Cennamo、Gawer 合著〈Towards a theory of ecosystems〉,是把「生態系」從流行語變成可分析構念的關鍵一篇。核心貢獻是區分生態系、供應鏈、市場三者,並提出模組化與互補性是生態系成立的結構條件。他也研究產業架構與價值遷移。",
+       "must": "最實用的一個區分:生態系不等於平台,也不等於價值鏈。生態系的定義特徵是「非泛用互補性」——參與者的資源必須為彼此特別調整,但又不是完全由單一方階層控制。你若在稿件裡用「生態系」這個詞卻沒有滿足這個條件,審稿人會要求你改用「供應鏈」或「市場」。這是很常見的退稿理由。"
+      },
+      {
+       "name": "Nancy Bocken",
+       "role": "被引經典",
+       "inst": "Maastricht University, 荷蘭",
+       "stat": "234 篇 · 35,639 次被引 · h=72 · 近兩年篇均被引 12.03",
+       "famous": "永續商業模式原型（sustainable business model archetypes）的提出者,2013 年那篇文獻與實務回顧至今被引超過四千次。她把「永續創新」拆成可操作的商業模式類型,是這一圈的通用貨幣。近年也研究充足性(sufficiency)導向的商業模式與循環經濟實驗。",
+       "must": "本日這篇之所以用「原型」當結論格式,源頭就在這裡。你要知道的是這個形式的優缺點:優點是讀者立刻認得、容易被引用;缺點是原型是類型學不是機制,回答「有哪幾種」但回答不了「為什麼會這樣」與「效果多大」。如果你要投這條線,先想清楚你的貢獻是分類還是解釋。"
+      },
+      {
+       "name": "Arnold Tukker",
+       "role": "被引經典",
+       "inst": "Leiden University / CML, 荷蘭",
+       "stat": "355 篇 · 26,587 次被引 · h=73 · 近兩年篇均被引 14.52",
+       "famous": "產品服務系統（PSS）與工業生態學的核心人物。他的 PSS 分類——產品導向、使用導向、結果導向——是這個領域的標準座標。也長期做投入產出分析與全球價值鏈的環境足跡計算,是 EXIOBASE 資料庫的重要推手。",
+       "must": "那個三分法你應該背下來:產品導向是賣產品加售後服務;使用導向是賣使用權(租賃、共享);結果導向是賣結果(賣影印張數而非影印機)。本日這篇引了 Tukker 卻自創新原型,沒有交代與三分法的關係——這正是我在重做藍圖裡建議先處理的第一件事。"
+      },
+      {
+       "name": "Annabelle Gawer",
+       "role": "領域必識 · 本篇未引為錨點",
+       "inst": "University of Surrey, 英國",
+       "stat": "127 篇 · 15,651 次被引 · h=33",
+       "famous": "平台研究的奠基者之一,與 Michael Cusumano 合著《Platform Leadership》。她的核心貢獻是把平台從技術架構概念擴展為組織與產業層次的分析單位,並提出平台治理、開放度、互補者管理的分析框架。也是 Jacobides 2018 生態系那篇的共同作者。",
+       "must": "如果你要寫任何跟平台治理開放度有關的東西,她是繞不過去的。特別是「開放程度不是二元的」這個洞見——平台可以在不同層次(介面、資料、互補品、治理權)有不同開放度。本日這篇把平台原型二分成封閉與開放,正好可以用她的多層次開放度框架拆得更細。"
+      }
+     ],
+     "canon": [
+      {
+       "term": "理論抽樣 vs 統計抽樣",
+       "t": "質性多案例研究的案例不是為了代表母體而選,是為了填補理論空白、製造極端對比而選。所以「你的案例不具代表性」這個批評對多案例研究其實是誤打——真正該問的是「你的案例選擇邏輯是什麼、為什麼這幾個能撐起這個型態」。反過來說,如果作者自己用了統計抽樣的語言來辯護,那才是真的出問題。"
+      },
+      {
+       "term": "Archetype（原型）作為輸出格式",
+       "t": "管理學裡歸納研究的常見結論形式:把複雜多樣的實務歸納成少數幾個內部一致的類型。它的認識論地位是類型學（typology）,不是理論。要從類型學升級成理論,必須說明類型之間的差異由什麼機制產生、以及類型如何影響結果。這個落差是原型類論文最常被打的地方。"
+      },
+      {
+       "term": "Gioia 資料結構圖",
+       "t": "一階概念、二階主題、聚合維度的三層圖。功能是讓讀者看見研究者如何從受訪者語言走到理論語言。實務要點:一階概念要保留受訪者的原始措辭,二階主題才開始用理論語彙;層與層之間的數量要收斂(例如 40 個一階收成 12 個二階收成 4 個維度)。沒有這張圖,管理學質性稿件近年很難過初審。"
+      },
+      {
+       "term": "生態系、平台、價值鏈的區分",
+       "t": "價值鏈是階層控制的線性關係;市場是泛用交易;生態系介於兩者之間——參與者彼此的資源需要特別調整(非泛用互補性),但沒有單一方完全控制。平台則是生態系的一種協調機制。用錯詞是這條線稿件被退的常見原因,而且審稿人通常會直接指出來。"
+      },
+      {
+       "term": "PSS 三分法",
+       "t": "Tukker 的產品導向、使用導向、結果導向。這個分類之所以重要,是因為它直接對應循環經濟的誘因結構:只有在結果導向下,廠商才真正有動機讓產品耐用——因為所有權沒有轉移,維修成本由廠商承擔。討論循環商業模式而不處理所有權歸屬,論證通常是空的。"
+      },
+      {
+       "term": "fsQCA 與等效路徑（equifinality）",
+       "t": "模糊集質性比較分析,適用於 10 到 50 個案例的中型樣本。它問的不是「哪個變數效果最大」,而是「哪些條件的組合構成結果的充分條件」。核心概念是等效路徑——可能有好幾條不同的組態通向同樣的高績效。這正好回答了原型研究無法回答的問題:不同原型可能同樣有效,而不是有優劣之分。"
+      }
+     ]
+    },
+    {
+     "wid": "W7196982422",
+     "title": "Legitimacy Mechanisms for the Diffusion of Reverse Innovation",
+     "journal": "Journal of Product Innovation Management",
+     "date": "2026-08-05",
+     "authors": "（JPIM, 2026）",
+     "doi": "https://doi.org/10.1111/jpim.70055",
+     "oa": true,
+     "fresh": false,
+     "refs": 59,
+     "topics": [
+      "Innovation and Socioeconomic Development",
+      "Environmental Sustainability in Business"
+     ],
+     "gist": [
+      "逆向創新——在新興市場研發、再回銷已開發市場的產品——概念本身不新，但「要如何在成熟市場取得正當性」一直是缺口。這篇用序列混合方法補這個洞。",
+      "研究一是質性階段，辨識並歸類出三類正當性機制：身分（identity）、聯想（associative）、組織（organizational）。以包裝食品為場域，說明逆向創新如何分別透過身分敘事、專家背書與策略性認證來建立正當性。從參考文獻可確認採半結構訪談並經正式編碼程序。",
+      "研究二是量化階段，採實驗性 vignette 方法，驗證這三類機制分別強化正當性的哪些面向，以及這些面向如何接續影響知覺價值與購買意願。分析工具鏈完整：G*Power 做事前檢定力分析、Fornell-Larcker 檢驗區辨效度、Hu & Bentler 的適配指標門檻評估結構方程模型。",
+      "整體結論：單一機制只能提升特定面向，逆向創新要成功擴散，需要同時處理多重正當性面向的整體性做法。作者把貢獻定位在幫助企業克服新興市場汙名、建立正當性。"
+     ],
+     "design": "序列探索式混合方法（QUAL → QUAN）。研究一以半結構訪談為主，依 Campbell 等人的深度訪談編碼規範建立三維分類。研究二依 Aguinis 與 Bradley 2014 年的實驗性 vignette 最佳實踐設計情境短文，操弄資訊線索，測試中介路徑：線索 → 正當性維度 → 知覺價值 → 購買意願，以結構方程模型估計。樣本來自線上受試者平台——它引用了 Douglas 等人 2023 年比較 MTurk、Prolific、CloudResearch 等平台資料品質的研究，顯示對樣本品質有意識。並引用 Zaichkowsky 的 Personal Involvement Inventory，代表有測量並控制產品涉入度。",
+     "lineage": [
+      "<b>理論骨幹是 Suchman 1995 年的〈Managing Legitimacy〉。</b>那篇把正當性分成實用型、道德型、認知型三類，並區分「取得、維持、修復」三種策略——這篇的三機制分類（身分／聯想／組織）基本上是在 Suchman 的座標系裡重新切分，切分依據換成資訊線索的來源而非正當性的性質。認出這一點，才能判斷它的分類是延伸還是重述。",
+      "<b>第二條線是「主動建構正當性」的策略傳統</b>：Zimmerman 與 Zeitz 2002 年的〈Beyond Survival: Achieving New Venture Growth by Building Legitimacy〉，以及 Zott 與 Huy 2007 年的〈How Entrepreneurs Use Symbolic Management to Acquire Resources〉。後者是「聯想機制」（專家背書、象徵性連結）最直接的來源——象徵管理如何換取資源，換到消費者情境就是象徵線索如何換取購買意願。",
+      "<b>身分機制的來源是 Gioia、Schultz 與 Corley 2000 年的〈Organizational Identity, Image, and Adaptive Instability〉。</b>把組織認同理論拉進消費者對產品的正當性判斷，是這篇在理論組裝上比較有意思的一步。",
+      "<b>消費者端接到 Sheth、Newman 與 Gross 1991 年的消費價值理論。</b>這是「知覺價值 → 購買意願」那一段的理論依據，另外還引了 Biswas 與 Roy 關於綠色產品消費價值的研究——顯示它把逆向創新的接受度問題，類比為綠色產品的接受度問題。這個類比本身是可爭論的。",
+      "<b>方法論引用密度異常高</b>：Hu & Bentler 1999、Fornell & Larcker 1981、Bagozzi & Yi 1988、G*Power、Aguinis & Bradley 的 vignette 規範、Douglas 等人的線上樣本品質研究。這種引用組合在 JPIM 是「我知道所有標準檢查」的訊號。",
+      "<b>值得注意的缺口：在被引用最多的參考文獻裡，看不到來源國效應（country-of-origin）的經典傳統。</b>整個消費者端的理論支撐都來自消費價值與綠色產品，而非國際行銷的來源國文獻。這與後面最重要的批判直接相關。"
+     ],
+     "critique": [
+      "<b>先修正一個常見的誤判：它的測量嚴謹度其實高於一般 vignette 稿件。</b>G*Power 事前檢定力、Fornell-Larcker 區辨效度、Hu & Bentler 適配門檻、Zaichkowsky 涉入度控制、線上樣本品質意識——這些都做了。批評它「沒做區辨效度」是不成立的；真正可議的是它做的是哪一種。",
+      "<b>用 Fornell-Larcker 而非 HTMT，是可以被挑戰的技術選擇。</b>Fornell-Larcker 準則在偵測相近構念的區辨效度不足時敏感度偏低，這在近十年已有系統性的模擬證據。而身分、聯想、組織這三個機制在概念上高度相鄰——專家背書該算聯想還是組織？——正是最需要高敏感度檢驗的情境。補一個 HTMT 是低成本、高說服力的動作。",
+      "<b>房間裡的大象是來源國效應，而參考文獻顯示它沒有被正面處理。</b>受試者對「新興市場研發」的反應，究竟來自逆向創新這個結構，還是單純的來源國汙名？現行設計分不開這兩者。這不是補一個控制變數能解決的，它需要設計層次的分離。整篇理論宣稱能否成立，押在這一點上。",
+      "<b>「需要整體性做法」這個結論被過度延伸。</b>要主張多重維度必須同時處理，必須測交互作用或組態；只跑主效果與平行中介就下這個結論，統計上撐不起來。這是全文最明顯的推論越界。",
+      "<b>意圖不是行為，而 JPIM 對此的容忍度正在下降。</b>vignette 測到的是購買意願；意願與實際購買的落差在消費行為文獻裡已被反覆記錄。整篇的外部效度全押在這一個測量上，而它引用的所有方法論規範都無法補救這個結構性限制。",
+      "<b>單一品類，而且是最容易的那一類。</b>包裝食品是低涉入、低風險品項。逆向創新的經典案例卻是醫療器材與汽車零件——高涉入、高風險。有趣的是它引了 Zaichkowsky 的涉入度量表，代表知道涉入度重要，卻仍只選了低涉入品類。這個選擇需要辯護。",
+      "<b>把逆向創新類比為綠色產品，是一個未被檢驗的假設。</b>綠色產品的接受障礙是「效能疑慮 + 價格溢價」，逆向創新的障礙是「來源國汙名 + 品質推論」。兩者的心理機制不必然相同，直接搬用消費價值理論需要說明。"
+     ],
+     "accept": [
+      "<b>混合方法的兩階段結構，正中 JPIM 近年的偏好。</b>純質性稿件被質疑外部效度，純實驗稿件被質疑理論貢獻；質性建構分類、實驗驗證機制的組合，同時回應了兩種質疑。這個結構本身就是通過初審的重要條件。",
+      "<b>方法論引用的密度是一種訊號行為，而且有效。</b>G*Power、Fornell-Larcker、Hu & Bentler、Aguinis & Bradley、Douglas 等人的樣本品質研究——這組引用告訴審稿人「標準檢查我全做了」。在方法審查嚴格的期刊，這能大幅降低第一輪被打回的機率。",
+      "<b>Suchman 是安全的理論母體。</b>掛在一個被引用一萬兩千次以上的框架下面，理論貢獻的評估標準會從「你是否建立了新理論」降為「你是否在既有框架裡切出了新區分」——後者的門檻低得多，也更容易達成。",
+      "<b>逆向創新這個主題與 JPIM 的讀者群高度相合。</b>它同時觸及新興市場、產品創新、國際擴散三個該刊長期關注的軸線，主題適配度本身就是接受的助力。",
+      "<b>開放取用（CC-BY）在 Wiley 體系下有助於可見度</b>，而編輯對稿件的預期引用表現不會沒有考量。",
+      "<b>但關鍵條件是：審稿人接受了「意圖」作為依變數。</b>這是整篇最脆弱的接合點。它能過，代表這一輪的審稿組合裡沒有人堅持要行為證據。如果你要複製這條路徑，這是最不可控的變數——同樣的設計換一組審稿人，結果可能完全不同。反過來說，這也正是升級的空間所在。"
+     ],
+     "redo": [
+      {
+       "h": "先把來源國效應從逆向創新裡切乾淨——這是整個重做的地基",
+       "t": "用 2×2 受試者間設計：研發地（新興／已開發）× 品牌來源國（新興／已開發）。只有當「新興研發 + 已開發品牌」這一格與其他格出現可解釋的差異，才能說效果來自逆向創新的結構，而不是來源國歧視。同時補上國際行銷的來源國文獻對話，把這個設計的必要性論證清楚。這一步不做，後面所有結論都站在流沙上。"
+      },
+      {
+       "h": "跨品類複製，並讓風險成為理論上的調節變數",
+       "t": "至少三個品類，依涉入度與風險排列：包裝食品（低）、家用電器（中）、醫療器材或汽車零件（高）。既然已經有 Zaichkowsky 的涉入度量表，就把它從控制變數升級為調節變數。可檢驗的預測很明確——風險上升時，機制的相對權重應該從身分敘事移向組織性線索（認證、法規合規、第三方檢驗）。這個交互作用若成立，理論貢獻立刻高一個層級。"
+      },
+      {
+       "h": "把依變數從意圖推到行為",
+       "t": "加一個誘因相容的測量：BDM 拍賣讓受試者用真實的參與費出價、真實選擇實驗、或與電商平台合作做田野實驗觀察點擊與加購。這是把稿件從「又一篇 vignette」變成「有行為證據」的最關鍵升級，也是唯一能讓接受條件從「運氣」變成「必然」的動作。"
+      },
+      {
+       "h": "區辨效度改用 HTMT，並預先註冊分析計畫",
+       "t": "保留 Fornell-Larcker 當對照，另外報 HTMT.85 準則——因為三個機制概念相鄰，這是最需要高敏感度的地方。同時把測量模型、中介路徑、假設方向上 AsPredicted 或 OSF 預先註冊。在實驗類稿件上，預先註冊已從加分項變成基本盤，而且它能有效防守「路徑挑選」的質疑。"
+      },
+      {
+       "h": "要說「整體性」，就必須做組態分析",
+       "t": "用完全因子設計測三類機制的二階與三階交互作用；或改用 fsQCA 找出哪些機制組合構成高正當性的充分條件。前者告訴你效果是否超過相加，後者告訴你有沒有多條等效路徑。「需要整體性做法」這個主張只能靠這兩者之一撐起來——現在的版本是用敘事補了統計的空缺。"
+      },
+      {
+       "h": "同時檢驗競爭模型，不要只報支持假設的那一條",
+       "t": "用 parallel mediation 一次放進三個正當性維度，並明確比較完全中介與部分中介模型的適配；報告測量恆等性（跨品類、跨樣本）。競爭模型的比較會讓審稿人相信結論不是挑出來的，這在 SEM 稿件裡是很有份量的加分。"
+      },
+      {
+       "h": "補齊 JPIM 審稿人必問的邊界條件",
+       "t": "至少四個調節變數：消費者世界主義、族群中心主義、對特定新興市場的先驗態度、品類知識。這些不只是控制變數——它們回答「這套機制對誰有效」，而那正是實務貢獻的所在，也是把 managerial implications 從空話寫成具體建議的唯一途徑。"
+      },
+      {
+       "h": "跨文化複製，別把「已開發市場」當成同質體",
+       "t": "若研究二只有單一國家的線上樣本，補上西歐與東亞。德國消費者對認證的反應強度、日本消費者對來源國的敏感度，與美國樣本可能差距很大。既然已經引用了線上樣本品質的比較研究，順勢做跨平台與跨國的穩健性檢驗是很自然的延伸。跨文化的複製失敗本身也是可發表的發現。"
+      }
+     ],
+     "fit": "只做品類擴充與邊界條件，仍在 <b>JPIM</b> 的守備範圍，而且會比原版穩。補上行為依變數與 2×2 的來源國分離設計後，可以挑戰 <b>Journal of Marketing</b> 或 <b>JAMS</b>——門檻在於行為測量的誘因相容性是否夠強。若把重心移到新興市場企業的國際化與正當性建構，<b>Journal of International Business Studies</b> 是另一條路，但需要補上制度理論的縱深。",
+     "figures": [
+      {
+       "name": "Mark C. Suchman",
+       "role": "被引經典",
+       "inst": "American Bar Foundation / Purdue University, 美國",
+       "stat": "50 篇 · 26,793 次被引 · h=17",
+       "famous": "1995 年在 Academy of Management Review 發表〈Managing Legitimacy: Strategic and Institutional Approaches〉,把正當性整合成三型——實用型(利害關係人的自利計算)、道德型(規範上的應然判斷)、認知型(理所當然、無需思考的接受)——並區分取得、維持、修復三種策略。這一篇是整個組織正當性研究的座標原點。他本人是法律社會學者,主要研究法律、組織與醫療資訊系統。",
+       "must": "注意他的統計側寫:只有 50 篇著作,h 指數僅 17,卻累積了 2.7 萬次引用。這是「單篇定義一生」的極端案例,也是理解引文分布極度偏斜的最好教材——h 指數在這種學者身上完全失效。實質上,你要記住的是認知型正當性最強但最難操作:當某件事已經理所當然到沒人質疑,它就不再需要被辯護。本日這篇的三機制,其實是在 Suchman 的座標系裡換一個切法。"
+      },
+      {
+       "name": "Christoph Zott",
+       "role": "被引經典",
+       "inst": "IESE Business School, 西班牙",
+       "stat": "72 篇 · 23,418 次被引 · h=28",
+       "famous": "與 Raphael Amit 共同建立了商業模式研究的理論基礎,並與 Quy Huy 合著 2007 年〈How Entrepreneurs Use Symbolic Management to Acquire Resources〉——象徵管理如何幫助新創取得資源。同樣是低產出、高影響的側寫:72 篇、2.3 萬次引用。",
+       "must": "象徵管理這個概念可以直接搬到消費者情境:創業者用象徵線索換取投資人資源,廠商用象徵線索換取消費者接受。本日這篇的「聯想機制」(專家背書、策略性認證)源頭就在這裡。要用的話,記得 Zott 與 Huy 的原始論證是有邊界條件的——象徵管理在資訊不對稱高、實質績效難驗證時才有效。低涉入的包裝食品是否滿足這個條件,值得推敲。"
+      },
+      {
+       "name": "Quy Nguyen Huy",
+       "role": "被引經典",
+       "inst": "INSEAD, 法國/新加坡",
+       "stat": "90 篇 · 7,631 次被引 · h=25",
+       "famous": "組織變革中的情緒與中階管理者研究的代表人物。與 Zott 合著象徵管理那篇之外,他對「情緒能力」與變革節奏(改變的時間結構)的研究也很有影響力。",
+       "must": "他提醒了一件在正當性研究裡常被忽略的事:正當性的建構是有時間性的,不是一次到位的橫斷面判斷。本日這篇用單次 vignette 測量,等於把一個累積過程壓縮成一個瞬間。如果你要做延伸,縱貫設計是很自然的一步。"
+      },
+      {
+       "name": "Jagdish N. Sheth",
+       "role": "被引經典",
+       "inst": "Emory University, 美國",
+       "stat": "523 篇 · 34,308 次被引 · h=75",
+       "famous": "行銷學的元老級人物。1991 年與 Newman、Gross 提出消費價值理論(theory of consumption values),把購買選擇拆成功能、社會、情感、認知、情境五種價值。他也是 Howard-Sheth 消費者行為模型的共同作者、關係行銷的早期推動者,並長期研究新興市場。",
+       "must": "消費價值理論是「知覺價值 → 購買意願」這條路徑最常用的理論外衣,但要注意它是分類框架而非因果理論——它告訴你價值有哪幾種,不告訴你哪一種在什麼情況下主導。所以用它當中介變數的理論依據時,必須額外論證為什麼是這一種價值而不是另一種。"
+      },
+      {
+       "name": "Herman Aguinis",
+       "role": "被引經典",
+       "inst": "George Washington University, 美國",
+       "stat": "357 篇 · 41,606 次被引 · h=93 · 近兩年篇均被引 12.10",
+       "famous": "管理學方法論的當代權威。2014 年與 Bradley 合著〈Best Practice Recommendations for Designing and Implementing Experimental Vignette Methodology Studies〉,是 vignette 實驗的規範文件。他也在調節效果偵測、離群值處理、研究可信度與可重製性上有大量方法論貢獻。",
+       "must": "他那篇 vignette 規範裡有一條最常被忽略卻最要命:paper people problem——受試者在假想情境中的反應,可能與真實情境中的行為系統性不同,而且這個落差在高風險決策上會放大。本日這篇的依變數是購買意願,正好卡在這個問題上。你若要用 vignette,至少要在限制段落正面處理這一條,不要假裝它不存在。"
+      },
+      {
+       "name": "Vijay Govindarajan",
+       "role": "領域必識 · 本篇未引為錨點",
+       "inst": "Dartmouth College (Tuck), 美國",
+       "stat": "205 篇 · 18,843 次被引 · h=48",
+       "famous": "逆向創新（reverse innovation）這個詞的共同提出者,與 Chris Trimble 合著同名著作,經典案例是 GE 為印度市場開發的可攜式心電圖機後來回銷美國。他也研究策略創新、三箱理論(管理現在、選擇性遺忘過去、創造未來)。",
+       "must": "這是本篇主題的源頭人物。要記住原始概念的兩個特徵,因為它們正好是本篇偏離的地方:第一,經典案例是醫療器材——高涉入、高風險品類,而本篇選了包裝食品;第二,原始論證的重點在企業內部的組織障礙(母公司的資源與心態),而非消費者端的接受度。本篇把戰場移到消費者端,是有意思的延伸,但也意味著它其實沒有直接對話 Govindarajan 的核心論點。"
+      }
+     ],
+     "canon": [
+      {
+       "term": "Suchman 的正當性三型",
+       "t": "實用型正當性來自利害關係人的自利計算(這對我有好處);道德型來自規範判斷(這是對的事);認知型來自理所當然(我從沒想過要質疑)。三者的穩固程度遞增,但可操作性遞減。策略上分成取得、維持、修復三階段。任何講正當性的稿件,審稿人都會拿這個座標來對照你的分類——所以你必須說明你的分類與 Suchman 的關係是延伸、細化,還是重述。"
+      },
+      {
+       "term": "Symbolic management（象徵管理）",
+       "t": "在實質績效難以驗證時,行為者用象徵性線索(背書、認證、聯盟、儀式)來傳遞不可直接觀察的品質訊號。這與經濟學的訊號理論相通,但更強調意義建構而非成本高低。邊界條件很重要:資訊不對稱越高、實質驗證越困難,象徵管理越有效——反過來說,在容易試用驗證的低價品類,象徵線索的作用可能被高估。"
+      },
+      {
+       "term": "Vignette 方法與 paper people problem",
+       "t": "情境短文實驗的優點是可以乾淨地操弄多個因子並保有實驗控制;缺點是受試者在假想情境的反應與真實行為可能系統性不同。Aguinis 與 Bradley 的規範建議:提高情境的真實感與涉入度、避免要求受試者做他們從未做過的判斷、並在可能時輔以行為測量。這是所有 vignette 稿件的必答題。"
+      },
+      {
+       "term": "Fornell-Larcker vs HTMT",
+       "t": "兩種區辨效度判準。Fornell-Larcker 比較的是各構念 AVE 的平方根與構念間相關;HTMT 比較的是異質特質相關與同質特質相關的比值。近十年的模擬研究顯示,當構念高度相鄰時,Fornell-Larcker 的偵測力明顯不足,而 HTMT(門檻 0.85 或 0.90)更敏感。實務建議:兩個都報,尤其當你的構念在概念上容易被質疑重疊時。"
+      },
+      {
+       "term": "中介 vs 調節,以及為什麼「整體性」需要調節",
+       "t": "中介回答「怎麼發生的」(X 透過 M 影響 Y);調節回答「對誰、在什麼條件下」(X 對 Y 的效果隨 W 而變)。關鍵在於:若你要主張「多個機制必須同時作用才有效」,那是交互作用的宣稱,屬於調節而非中介。只跑平行中介然後說需要整體性做法,是推論越界——這正是本日第三篇的問題。"
+      },
+      {
+       "term": "來源國效應（country-of-origin effect）",
+       "t": "消費者用產品的來源國推論品質,是國際行銷數十年的老題目。與逆向創新交纏的關鍵在於:研發地與品牌來源國可以分離。若研究設計不把兩者交叉操弄,你觀察到的效果無法區分是「逆向創新的結構」還是「新興市場汙名」。這是本日第三篇最根本的識別問題,也是任何新興市場產品接受度研究都該預設處理的第一個競爭解釋。"
+      }
+     ]
+    }
+   ],
+   "podcast": "【每日學術新聞　二零二六年八月八日　早班】\n\n歡迎收聽每日學術新聞。本節目從開放學術資料庫 OpenAlex，追蹤十五本科學計量學與創新管理領域的期刊，為您整理今年最新發表的研究。今天早班為您帶來三則研究報導，以及三段專家回應。\n\n首先是今天的頭條。\n\n第一則。一本德語藥學期刊，五十年的作者性別普查。\n\n這項研究發表在《科學計量學》期刊，上線日期是昨天，八月七日。研究對象是德國藥學會的會員刊物《Pharmakon》，前身叫做《我們時代的藥學》。這是一本德語、非同儕審查的刊物。\n\n研究團隊做的是普查，不是抽樣。他們把一九七二年到二零二一年、整整五十年之間刊出的一千五百七十七篇文章、兩千五百零九位作者，全部納入分析，追蹤女性作者比例的長期變化。\n\n結果分成三個層次。\n\n第一個層次是總量。五十年間，女性作者只佔全體的百分之二十六。\n\n第二個層次是趨勢。這條曲線非常陡。一九七零年代初期，女性作者大約只有百分之五；到了二零二零年，這個數字已經接近百分之五十。卡方檢定的顯著性，達到萬分之零點四的水準。\n\n第三個層次，也是整篇研究最值得注意的一層。二零二零年，是這本期刊創刊以來，第一次出現女性第一作者多於男性的年份。然而，在教授這個最高學術職級上，女性人數仍然遠遠少於男性。底部翻轉了，頂端還沒有。\n\n研究另外還有兩個附帶發現。第一，五十年間每篇論文的平均作者數持續上升，這與整個科學界的合著趨勢一致。第二，非藥學背景的作者投稿變多，研究團隊把它解讀為跨領域交流增加的訊號。\n\n論文的最後，作者把研究定位成政策工具，明確指向德國的政治部門、大學，以及藥師公會。\n\n值得一提的是，這篇論文的資深作者 Roland Seifert，本身是德國漢諾威醫學院的分子藥理學家，發表過八百零七篇著作，被引用將近一萬五千次。他在《Naunyn-Schmiedeberg 藥理學檔案》這本期刊上有一百三十一篇著作，遠遠超過他其他任何發表管道。這樣的集中度，通常對應的是編輯職務。換句話說，這不是一位外來的計量學者在研究藥學界，而是領域內部人在做自我檢視。\n\n第二則。四家電子大廠，兩種平台原型，以及循環經濟的分岔路。\n\n這項研究發表在《Technovation》期刊，日期是八月六日。\n\n研究的問題意識是這樣的：數位平台正在重塑傳統的線性價值鏈，而且越來越被當成循環經濟落地的主要推手。但是，不同的平台設計，會不會導向不同的循環結果？\n\n研究團隊比較了四家電子製造商，分別是蘋果、三星、小米，以及戴爾，並且歸納出兩種平台原型。\n\n第一種，稱為高階整合生態系，以蘋果和三星為代表。這一路的做法是鎖定高價值消費者區隔，強調零組件整合與生命週期控制，平台治理封閉而且自有。他們的循環做法優先落在維修、翻新，以及延長產品壽命，而且全部發生在高度整合的產品服務系統之內。\n\n第二種，稱為開放式生態系協作者，以小米和戴爾為代表。這一路把夥伴與使用者拉進來共同參與，重心放在資產管理、服務模組化，以及面向價格敏感消費者與企業客戶的可負擔性。\n\n研究的結論是：平台設計會直接形塑循環成效。治理結構、商業模式，以及數位基礎設施這三者，必須與市場定位和使用者需求對齊。\n\n第三則。逆向創新要進入成熟市場，需要哪些正當性機制。\n\n這項研究發表在《產品創新管理期刊》，日期是八月五日。\n\n所謂逆向創新，指的是在新興市場研發、然後回銷已開發市場的產品。這個概念本身並不新，最經典的案例是奇異公司為印度市場開發的可攜式心電圖機，後來回銷美國。但是，這類產品要如何在成熟市場取得正當性，一直是個缺口。\n\n研究採用混合方法，分成兩個階段。\n\n第一階段是質性研究，透過半結構訪談，辨識並歸類出三種正當性機制，分別是身分機制、聯想機制，以及組織機制。研究以包裝食品為場域，說明逆向創新如何透過身分敘事、專家背書，以及策略性認證，來建立正當性。\n\n第二階段是量化研究，採用實驗性情境短文方法，驗證這三類機制分別強化正當性的哪些面向，以及這些面向如何接續影響消費者的知覺價值與購買意願。\n\n整體結論是：單一機制只能提升特定面向。逆向創新要成功擴散，需要同時處理多重正當性面向的整體性做法。\n\n以上是今天的三則研究報導。接下來是專家回應時間。\n\n【專家回應　第一則　性別普查研究】\n\n先談這篇研究最聰明的地方。它選了一本可以做到百分之百普查的封閉期刊，用範圍上的犧牲，換來五十年沒有缺漏的縱貫比較。在動輒撈取數百萬筆資料、卻永遠存在覆蓋偏誤與作者消歧誤差的稿件池裡，這種資料策略反而是有辨識度的。\n\n但是，這篇研究有一個致命的空缺，而且是它自己招來的。\n\n它引用了 Shaw 與 Stanton 二零一二年那篇《管線的漏洞》。那篇論文的核心主張是：必須把人口慣性，跟持續存在的性別差異，分開來看。所謂人口慣性的意思是，就算完全沒有任何偏誤，只要大量女性在近年進入這個領域，資深層級的女性比例也會因為晉升需要時間，而自然落後數十年。\n\n換句話說，女性作者比例從百分之五升到百分之五十，究竟有多少是來自新進世代的性別組成改變，又有多少是來自同一世代的女性真的留了下來、升了上去？這兩件事的政策含意完全不同。這篇研究引用了那個文獻，卻沒有做這個分解。\n\n第二個問題是統計工具配不上資料的解析度。把五十年切成幾個區段做卡方檢定，等於把一條連續的趨勢降格成類別比較。以年份為連續變項的邏輯迴歸，可以直接估算出每一年女性作者的勝算比，資訊量高出一個檔次。\n\n第三，外部效度的邊界比表面上更窄。非同儕審查刊物的投稿篩選機制，跟研究型期刊根本不同。它比較接近專業社群的溝通平台，而不是研究產出的競技場。所以這裡的比例，不能被讀成德國藥學界的研究生產力性別結構。\n\n那麼，如果要重現並且改進這項研究，該怎麼做？\n\n第一步，把單一期刊升級成焦點案例加對照群。保留《Pharmakon》當作焦點案例，同時用 OpenAlex 的德語篩選條件，加上藥學相關的主題編號，把整個德語藥學期刊群抓下來當作基準，並且區分同儕審查與非同儕審查兩類。這樣不只能回答這本期刊是否特殊，還能順便回答一個原研究完全沒碰、但資料唾手可得的問題：審查機制本身，是不是一個性別過濾器。\n\n第二步，性別推斷必須三角驗證。同時使用 Genderize、NamSor，以及 Gender API 三個服務，三者一致的取為高信度；不一致或無法判定的，用 ORCID 的自報資料補足；剩下的高產作者人工查驗。最重要的是，一定要報告無法判定的比率，並且做敏感度分析：把無法判定者全部當成男性、全部當成女性、按比例分配，看結論會不會翻轉。這一段有沒有做，幾乎決定了這類稿件的生死。\n\n這裡還有一個容易被忽略的陷阱。早期文獻常常只有姓氏縮寫，姓名推斷的失敗率會比近期高。如果無法判定的比率隨時間下降，而且不是隨機分布，那條上升曲線就有一部分是測量假象。所以必須報告無法判定率隨時間的分布。\n\n第三步，職級改用學術年齡當作主要操作化。用作者首次發表的年份推算學術年齡，切成早期、中期、資深三段。這樣全樣本都可取得，跨國也能比較，還能避開德語頭銜制度的特殊性。\n\n第四步，也是最核心的一步，做人口慣性分解。用作者首次發表年定義進入世代，然後把女性比例的變化拆成兩個成分：各世代之間的性別組成差異，以及同一世代內部隨時間的留存與晉升差異。可以用年齡、時期、世代分解，或是簡化的世代固定效果模型。做完這一步，這篇研究的貢獻等級會整個改變——從「比例上升了」，變成「上升有多少是真的改善」。\n\n第五步，換成混合效果邏輯迴歸，並且把第一作者、通訊作者、末位作者三個位置分開建模。末位作者在生醫傳統代表資深主導者，是漏斗效應最靈敏的位置。把三條軌跡畫在同一張圖上，落差本身就是論文的主圖。\n\n最後，如果要從描述走向因果，就需要一個外生衝擊。德國研究基金會在二零零八年推出的研究導向性別平等標準，可以當作斷點做中斷時間序列；或者以奧地利、瑞士的德語藥學期刊當作對照組，做差異中之差異，檢驗政策是否真的改變了曲線的斜率。\n\n【專家回應　第二則　平台原型研究】\n\n這篇研究最大的結構問題，是四個案例切成兩種原型，等於每一種原型只有兩個案例支撐。Eisenhardt 建議多案例研究使用四到十個案例，是有道理的：一個型態要能被稱為原型，必須先在同型內部看到重複，再在異型之間看到對比。每格只有兩個案例，這兩件事都撐不住。\n\n第二個問題，可以從它的參考文獻看出來。它引用了 Bowen 二零零九年那篇《文件分析作為質性研究方法》，這代表主要證據來自企業文件，而不是第一手訪談。問題在於，文件分析的方法論前提是文件具有可追溯性與非反應性——而企業自願揭露的永續報告，恰好兩者都不滿足。它本來就是為了塑造形象而生產的。漂綠風險因此不是一句限制段落可以打發的，它是活的效度威脅。\n\n第三，原型是類型學，不是機制。「平台設計影響循環成效」這句話裡面，成效那一端根本沒有被測量。沒有回收率、沒有翻新機營收佔比、沒有零件供應年限、沒有實際服役壽命，因果宣稱就只能停在敘事層次。\n\n第四，內生性直指核心。蘋果的高階市場定位，可能同時導致了封閉平台與延壽策略。也就是說，平台原型跟市場定位根本不是彼此獨立的自變數。如果不處理這個共同前因，所謂原型可能只是市場定位的另一個名字。\n\n那麼要怎麼重做？\n\n第一，案例數擴充到十二到十六家，並且補進三類目前完全缺席的行為者：挑戰者品牌、第三方維修平台，以及企業端的資訊資產處置業者。真正把循環做成生意的那一群人，現在完全不在樣本裡。\n\n第二，資料必須三角化。第一條腿是半結構訪談，每個案例訪問三到五位平台治理、逆物流與售後主管。第二條腿是不受企業控制的客觀資料，包括第三方可修復性評分、歐盟生態設計法規的合規文件、維修與翻新相關的專利分類，以及獨立拆解報告。第三條腿是使用者端的行為痕跡，例如二手市場的價格衰減曲線，可以當作實際服役壽命的替代指標。後面兩條特別重要，因為它們正好補上文件分析所缺的非反應性。\n\n第三，先處理與既有分類的關係，再談新原型。這篇引用了 Tukker 的產品服務系統回顧，卻沒有沿用他的產品導向、使用導向、結果導向三分法。應該先把擴充後的案例編碼進既有的三分法，看它切不切得開。如果切得開，就沒有必要自創；如果切不開，那個切不開的地方，就是新分類的立論基礎。\n\n第四，把平台原型拆成可測量的連續維度，包括治理封閉度、模組化程度、逆物流整合度，以及資料權屬歸屬。然後用集群分析或模糊集質性比較分析，讓原型從資料裡自己長出來。這一步同時解決了案例數不足與內生性兩個問題，因為維度是獨立測量的，不是從市場定位推導出來的。\n\n第五，補上循環績效的結果變數，並且用模糊集質性比較分析處理中型樣本。要問的是：治理封閉度、模組化，以及市場定位的哪些組合，構成高循環績效的充分條件。這種方法還能揭示等效路徑——可能有好幾條不同的組態，通向同樣的好結果。\n\n最後，如果要做因果識別，歐盟維修權相關規範的生效時點，提供了一個不受廠商策略控制的外生斷點。比較同一款產品在歐盟市場與非歐盟市場的維修可得性、零件價格與服役壽命變化，做差異中之差異。\n\n【專家回應　第三則　逆向創新正當性研究】\n\n這一篇要先修正一個容易犯的誤判。從參考文獻可以看出，它的測量嚴謹度其實高於一般的情境短文研究——事前檢定力分析、區辨效度檢驗、結構方程模型的適配門檻、涉入度量表、線上樣本品質的意識，全部都做了。批評它沒做標準檢查，是不成立的。\n\n真正可議的是它做的是哪一種。它用的是 Fornell 與 Larcker 的準則，而不是異質單質比值。前者在偵測相近構念的區辨效度不足時，敏感度偏低，這一點在近十年已經有系統性的模擬證據。而身分、聯想、組織這三個機制在概念上高度相鄰——專家背書到底該算聯想還是組織——正是最需要高敏感度檢驗的情境。\n\n接下來是房間裡的大象。受試者對「新興市場研發」的反應，究竟來自逆向創新這個結構本身，還是單純的來源國汙名？現行設計分不開這兩者。而整篇研究的理論宣稱能不能成立，就押在這一點上。從被引用最多的參考文獻來看，國際行銷的來源國傳統並沒有進入這篇的對話。\n\n第三，「需要整體性做法」這個結論被過度延伸了。要主張多重維度必須同時處理，必須測量交互作用或組態。只跑主效果與平行中介，就下這個結論，統計上撐不起來。\n\n第四，意圖不是行為。情境短文實驗測到的是購買意願，而意願與實際購買之間的落差，在消費行為文獻裡已經被反覆記錄。整篇研究的外部效度，全部押在這一個測量上。\n\n那麼要怎麼重做？\n\n第一步，也是整個重做計畫的地基：把來源國效應從逆向創新裡切乾淨。用二乘二的受試者間設計，一個維度是研發地，分成新興市場與已開發市場；另一個維度是品牌來源國，同樣分成兩種。只有當「新興市場研發，加上已開發市場品牌」這一格出現可解釋的差異，才能說效果來自逆向創新的結構，而不是來源國歧視。\n\n第二步，跨品類複製，並且讓風險成為理論上的調節變數。至少做三個品類，依照涉入度與風險排列：包裝食品屬於低風險，家用電器屬於中風險，醫療器材或汽車零件屬於高風險。可檢驗的預測很明確——風險上升時，機制的相對權重應該從身分敘事，轉移到組織性線索，也就是認證、法規合規與第三方檢驗。這個交互作用如果成立，理論貢獻立刻提高一個層級。\n\n第三步，把依變數從意圖推進到行為。加入一個誘因相容的測量，例如讓受試者用真實的參與費出價、真實選擇實驗，或者與電商平台合作進行田野實驗，直接觀察點擊與加入購物車的行為。這是把稿件從「又一篇情境短文研究」，變成「有行為證據」的關鍵升級。\n\n第四步，區辨效度改用異質單質比值，並且把測量模型、中介路徑與假設方向預先註冊。在實驗類研究上，預先註冊已經從加分項變成基本盤。\n\n第五步，如果要主張整體性，就必須做組態分析。用完全因子設計測量二階與三階交互作用，或改用模糊集質性比較分析，找出哪些機制組合構成高正當性的充分條件。\n\n最後，補齊邊界條件與跨文化複製。加入消費者世界主義、族群中心主義、對特定新興市場的先驗態度，以及品類知識這四個調節變數。它們回答的是「這套機制對誰有效」，而那正是實務貢獻的所在。同時，不要把已開發市場當成同質的整體，德國消費者對認證的反應強度，跟日本消費者對來源國的敏感度，可能差距很大。\n\n【今日總結】\n\n今天這三篇研究，卡在同一個位置。好的描述並不難，難的是把描述推進到可以識別的因果宣稱。第一篇擁有五十年的資料，卻沒有分解人口慣性；第二篇歸納出了原型，卻沒有結果變數；第三篇有嚴謹的測量，卻沒有行為依變數。三個缺口，三種補法，而且都不是資源問題，而是研究設計的選擇問題。\n\n以上是今天早班的每日學術新聞，中午再會。"
+  }
+ ]
+}
+</script>
+
+<script>
+// ── 朗讀引擎：Chrome 內建 Web Speech API，免安裝、免金鑰 ──────────────
+const TTS = (function(){
+  const synth = window.speechSynthesis;
+  const MAX = 150;                       // 只在句末切，長度接近但不超過此值
+  let voices = [], cur = null;           // cur = { host, segs, i, rate, v }
+
+  // 播報稿 → [{hd:bool, text}]，只在句號問號驚嘆號處斷句，避免語調被切斷
+  function segment(raw){
+    const out = [];
+    String(raw || '').split(/\n+/).forEach(para => {
+      para = para.trim();
+      if (!para) return;
+      if (para.charAt(0) === '【') { out.push({hd: true, text: para.replace(/[【】]/g,'')}); return; }
+      let buf = '';
+      para.split(/(?<=[。！？])/).forEach(part => {
+        if (!part) return;
+        if ((buf + part).length > MAX && buf) { out.push({hd:false, text: buf}); buf = part; }
+        else buf += part;
+      });
+      if (buf.trim()) out.push({hd:false, text: buf});
+    });
+    return out;
+  }
+
+  // 自然度排序：神經語音 > 線上語音 > zh-TW > 其他中文
+  function score(v){
+    const s = (v.name + ' ' + v.lang);
+    let n = 0;
+    if (/natural|neural/i.test(s)) n += 100;
+    if (/online/i.test(s))         n += 60;
+    if (/google/i.test(s))         n += 40;
+    if (/zh[-_]TW|Hant|Taiwan/i.test(s)) n += 30;
+    if (/zh[-_]HK|Cantonese/i.test(s))   n += 5;
+    if (/^zh/i.test(v.lang))       n += 10;
+    if (/desktop|sapi/i.test(s))   n -= 30;   // 舊式本地語音，機械感最重
+    return n;
+  }
+
+  function loadVoices(){
+    const all = synth ? synth.getVoices() : [];
+    const zh = all.filter(v => /^zh/i.test(v.lang));
+    voices = (zh.length ? zh : all).slice().sort((a,b) => score(b) - score(a));
+    return voices;
+  }
+
+  function fillSelects(host){
+    const vs = loadVoices();
+    const sel = host.querySelector('.va');
+    if (sel && !sel.dataset.filled && vs.length) {
+      sel.innerHTML = vs.map((v,i) =>
+        '<option value="' + i + '">' + v.name.replace(/^Microsoft |^Google /,'') +
+        (score(v) >= 100 ? ' ★自然' : '') + '</option>').join('');
+      sel.value = 0;                      // 排序後第一個就是最自然的
+      sel.dataset.filled = '1';
+    }
+    return vs.length;
+  }
+
+  function paint(host, idx){
+    host.querySelectorAll('.script p').forEach(p => {
+      const i = +p.dataset.i;
+      p.classList.toggle('now', i === idx);
+      p.classList.toggle('done', i < idx);
+    });
+    const p = host.querySelector('.script p.now');
+    if (p) p.scrollIntoView({block:'nearest', behavior:'smooth'});
+    const st = host.querySelector('.pstat');
+    if (st) st.textContent = (idx + 1) + ' / ' + cur.segs.length;
+  }
+
+  function speakAt(i){
+    if (!cur || i >= cur.segs.length) { stop(true); return; }
+    cur.i = i;
+    paint(cur.host, i);
+    const s = cur.segs[i];
+    const vs = loadVoices();
+    const u = new SpeechSynthesisUtterance(s.text);
+    if (vs[cur.v]) { u.voice = vs[cur.v]; u.lang = vs[cur.v].lang; } else { u.lang = 'zh-TW'; }
+    u.rate = cur.rate * (s.hd ? 0.94 : 1);   // 章節標題唸慢一點
+    u.pitch = s.hd ? 1.04 : 1;
+    u.onend = () => {
+      if (!cur || cur.i !== i) return;
+      // 章節之間留半秒空白，聽起來像真的換段
+      const gap = s.hd || (cur.segs[i+1] && cur.segs[i+1].hd) ? 550 : 0;
+      if (gap) setTimeout(() => { if (cur && cur.i === i) speakAt(i + 1); }, gap);
+      else speakAt(i + 1);
+    };
+    u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') stop(true); };
+    synth.speak(u);
+  }
+
+  function start(host, segs, from){
+    stop();
+    cur = {
+      host, segs, i: from || 0,
+      rate: parseFloat(host.querySelector('.rate').value),
+      v: +host.querySelector('.va').value || 0
+    };
+    host.querySelector('.play').textContent = '❚❚ 暫停';
+    host.querySelector('.stop').disabled = false;
+    speakAt(cur.i);
+  }
+
+  function stop(finished){
+    if (synth) synth.cancel();
+    if (cur) {
+      const h = cur.host;
+      h.querySelector('.play').textContent = '▶ 朗讀';
+      h.querySelector('.stop').disabled = true;
+      if (finished) {
+        h.querySelectorAll('.script p').forEach(p => p.classList.remove('now'));
+        h.querySelector('.pstat').textContent = '已播完';
+      }
+    }
+    cur = null;
+  }
+
+  return {
+    segment, fillSelects, start, stop,
+    supported: () => !!synth,
+    isPlaying: host => !!cur && cur.host === host,
+    at: () => cur ? cur.i : 0,
+    pause: () => synth.pause(),
+    resume: () => synth.resume(),
+    paused: () => synth && synth.paused,
+    restart: (i, r) => { if (!cur) return; const h = cur.host, s = cur.segs;
+                 synth.cancel();
+                 cur = {host:h, segs:s, i, rate: (r == null ? cur.rate : r), v:+h.querySelector('.va').value||0};
+                 speakAt(i); }
+  };
+})();
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    document.querySelectorAll('.podbody').forEach(h => {
+      h.querySelectorAll('select').forEach(s => { delete s.dataset.filled; });
+      const n = TTS.fillSelects(h), w = h.querySelector('.pwarn');
+      if (n && w) w.style.display = 'none';
+    });
+  };
+}
+
+(function(){
+  const D = JSON.parse(document.getElementById('digest-data').textContent);
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const ALLOW = /&lt;(\/?)b&gt;/g;                       // only <b> survives
+  const rich = s => esc(s).replace(ALLOW, '<$1b>');
+
+  const all = [];
+  D.runs.forEach(r => r.papers.forEach(p => all.push(Object.assign({}, p, {_run:r}))));
+
+  document.getElementById('sub').textContent =
+    '追蹤 ' + D.journals.length + ' 本期刊 · 最後更新 ' + D.updated + ' · 新→舊倒序推進';
+  document.getElementById('s-done').textContent = all.length;
+  document.getElementById('s-pool').textContent = D.pool.toLocaleString();
+  document.getElementById('s-j').textContent = D.journals.length;
+  const remain = Math.max(0, D.pool - all.length);
+  document.getElementById('s-eta').textContent = Math.ceil(remain / 9) + ' 天';
+  document.getElementById('prog').style.width =
+    Math.max(0.6, all.length / D.pool * 100).toFixed(2) + '%';
+
+  const fj = document.getElementById('fj');
+  [...new Set(all.map(p => p.journal))].sort().forEach(j => {
+    const o = document.createElement('option'); o.value = j; o.textContent = j; fj.appendChild(o);
+  });
+
+  const q = document.getElementById('q'), fn = document.getElementById('fn'), feed = document.getElementById('feed');
+  try {
+    const st = JSON.parse(localStorage.getItem('dsd-filters') || '{}');
+    if (st.q) q.value = st.q; if (st.j) fj.value = st.j; if (st.n) fn.value = st.n;
+  } catch(e){}
+  const save = () => { try { localStorage.setItem('dsd-filters',
+    JSON.stringify({q:q.value, j:fj.value, n:fn.value})); } catch(e){} };
+
+  const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
+
+  function card(p){
+    const tags = [
+      '<span class="tag j">' + esc(p.journal) + '</span>',
+      p.fresh ? '<span class="tag new">當日最新</span>' : '',
+      '<span class="tag">' + esc(p.date) + '</span>',
+      p.oa ? '<span class="tag oa">開放取用</span>' : '',
+      ...(p.topics || []).map(t => '<span class="tag">' + esc(t) + '</span>')
+    ].filter(Boolean).join('');
+
+    let h = '<article class="card' + (p.fresh ? ' fresh' : '') + '">' +
+      '<div class="meta">' + tags + '</div>' +
+      '<h3><a href="' + esc(p.doi) + '" target="_blank" rel="noopener">' + esc(p.title) + '</a></h3>' +
+      '<div class="au">' + esc(p.authors) + '</div>';
+
+    h += '<div class="sec gist"><h4>研究全貌</h4>' +
+         arr(p.gist).map(t => '<p>' + rich(t) + '</p>').join('') + '</div>';
+
+    if (p.design) h += '<div class="sec design"><h4>方法拆解</h4><div class="box">' + rich(p.design) + '</div></div>';
+
+    if (arr(p.lineage).length) h += '<div class="sec lin"><h4>文獻定位 · 它在跟誰對話' +
+      (p.refs ? '（' + p.refs + ' 筆參考文獻）' : '') + '</h4><div class="box"><ul>' +
+      arr(p.lineage).map(t => '<li>' + rich(t) + '</li>').join('') + '</ul></div></div>';
+
+    if (arr(p.critique).length) h += '<div class="sec crit"><h4>學者視角 · 貢獻與侷限</h4><div class="box"><ul>' +
+      arr(p.critique).map(t => '<li>' + rich(t) + '</li>').join('') + '</ul></div></div>';
+
+    if (arr(p.accept).length) h += '<div class="sec acc"><h4>被該期刊接受的關鍵</h4><div class="box"><ul>' +
+      arr(p.accept).map(t => '<li>' + rich(t) + '</li>').join('') + '</ul></div></div>';
+
+    if (arr(p.figures).length) h += '<div class="sec fig"><h4>領域人物誌 · 你該認識的人</h4><div class="figs">' +
+      arr(p.figures).map(f => {
+        const cls = f.role === '本篇作者' ? ' own' : (/未引/.test(f.role || '') ? ' ext' : '');
+        return '<div class="fig"><div class="fh"><span class="fn">' + esc(f.name) + '</span>' +
+          '<span class="fr' + cls + '">' + esc(f.role) + '</span></div>' +
+          '<div class="fi">' + esc(f.inst) + ' · ' + esc(f.stat) + '</div>' +
+          '<p>' + rich(f.famous) + '</p>' +
+          '<p class="mu"><b>你該知道的是 · </b>' + rich(f.must) + '</p></div>';
+      }).join('') + '</div></div>';
+
+    if (arr(p.canon).length) h += '<div class="sec can"><h4>知識點 · 這個領域的共同語言</h4><dl class="can">' +
+      arr(p.canon).map(c => '<div><dt>' + esc(c.term) + '</dt><dd>' + rich(c.t) + '</dd></div>').join('') +
+      '</dl></div>';
+
+    if (arr(p.redo).length) h += '<div class="sec redo"><h4>如果我要重做這個研究</h4><ol class="redo">' +
+      arr(p.redo).map(s => '<li><strong>' + rich(s.h) + '</strong>' + rich(s.t) + '</li>').join('') + '</ol></div>';
+
+    if (p.fit) h += '<div class="fit"><b>投稿定位 · </b>' + rich(p.fit) + '</div>';
+
+    return h + '</article>';
+  }
+
+  function render(){
+    save();
+    const kw = q.value.trim().toLowerCase(), jj = fj.value, nn = fn.value;
+    let html = '';
+    D.runs.forEach(r => {
+      const ps = r.papers.filter(p => {
+        if (jj && p.journal !== jj) return false;
+        if (nn === '1' && !p.fresh) return false;
+        if (nn === 'oa' && !p.oa) return false;
+        if (kw) {
+          const hay = [p.title, p.authors, p.journal, (p.topics||[]).join(' '),
+                       arr(p.gist).join(' '), p.design, arr(p.lineage).join(' '),
+                       arr(p.critique).join(' '), arr(p.accept).join(' '),
+                       arr(p.figures).map(f => f.name + f.inst + f.famous + f.must).join(' '),
+                       arr(p.canon).map(c => c.term + c.t).join(' '),
+                       arr(p.redo).map(s => s.h + s.t).join(' '), p.fit].join(' ').toLowerCase();
+          if (!hay.includes(kw)) return false;
+        }
+        return true;
+      });
+      if (!ps.length) return;
+      html += '<div class="runhead"><h2>' + esc(r.date) + ' · ' + esc(r.slot) +
+              '</h2><span class="when">' + esc(r.time) + ' · ' + ps.length + ' 篇</span></div>';
+      html += ps.map(card).join('');
+      if (r.podcast && !kw && !jj && !nn) {
+        const rid = r.date + '-' + r.slot;
+        const segs = TTS.segment(r.podcast);
+        html += '<details class="pod" data-rid="' + esc(rid) + '"><summary>新聞播報稿 · ' +
+          esc(r.date) + ' ' + esc(r.slot) + ' · 約 ' +
+          Math.round(r.podcast.length / 300) + ' 分鐘</summary>' +
+          '<div class="podbody">' +
+          '<div class="pwarn" style="display:none"></div>' +
+          '<div class="player">' +
+            '<button class="pbtn play">▶ 播報</button>' +
+            '<button class="pbtn sec stop" disabled>■ 停止</button>' +
+            '<label>語速 <input type="range" class="rate" min="0.6" max="1.6" step="0.05" value="1"><span class="rv">1.00×</span></label>' +
+            '<label>語音 <select class="va"></select></label>' +
+            '<span class="pstat">—</span>' +
+          '</div>' +
+          '<div class="script">' + segs.map((s, i) =>
+             '<p class="' + (s.hd ? 'hd' : '') + '" data-i="' + i + '">' + esc(s.text) + '</p>').join('') +
+          '</div>' +
+          '<button class="copy sec pbtn" style="margin-top:9px">複製全文</button>' +
+          '<div class="srcs">來源 DOI：' + ps.map(p => '<a href="' + esc(p.doi) + '" target="_blank" rel="noopener">' +
+              esc(p.doi.replace('https://doi.org/','')) + '</a>').join(' · ') + '</div>' +
+          '</div></details>';
+      }
+    });
+    feed.innerHTML = html || '<div class="empty">沒有符合條件的論文。</div>';
+
+    feed.querySelectorAll('button.copy').forEach(b => {
+      b.onclick = () => {
+        const txt = b.closest('.podbody').querySelector('.script').textContent;
+        navigator.clipboard.writeText(txt).then(() => {
+          const o = b.textContent; b.textContent = '已複製 ✓';
+          setTimeout(() => b.textContent = o, 1600);
+        });
+      };
+    });
+
+    // ── 朗讀控制 ──
+    feed.querySelectorAll('.podbody').forEach(host => {
+      const warn = host.querySelector('.pwarn');
+      if (!TTS.supported()) {
+        warn.style.display = 'block';
+        warn.textContent = '這個瀏覽器不支援語音朗讀，逐字稿仍可閱讀與複製。';
+        host.querySelector('.player').style.display = 'none';
+        return;
+      }
+      const nVoices = TTS.fillSelects(host);
+      if (!nVoices) {
+        warn.style.display = 'block';
+        warn.textContent = '系統尚未載入中文語音。Windows 可到「設定 → 時間與語言 → 語音」新增中文（繁體）語音套件，重開瀏覽器後即可播報。';
+      } else if (!/★自然/.test(host.querySelector('.va').innerHTML)) {
+        warn.style.display = 'block';
+        warn.textContent = '目前只找到舊式本地語音，機械感較重。Windows 到「設定 → 時間與語言 → 語音 → 新增語音」安裝中文（繁體），即可取得 Microsoft 的自然語音；清單中標示 ★自然 的選項音質最好。';
+      }
+
+      const rid = host.closest('.pod').dataset.rid;
+      const segs = TTS.segment((D.runs.find(r => r.date + '-' + r.slot === rid) || {}).podcast || '');
+      const play = host.querySelector('.play');
+      const rate = host.querySelector('.rate');
+      const rv = host.querySelector('.rv');
+
+      play.onclick = () => {
+        TTS.fillSelects(host);
+        if (!TTS.isPlaying(host)) { TTS.start(host, segs, 0); return; }
+        if (TTS.paused()) { TTS.resume(); play.textContent = '❚❚ 暫停'; }
+        else { TTS.pause(); play.textContent = '▶ 繼續'; }
+      };
+      host.querySelector('.stop').onclick = () => TTS.stop(true);
+      rate.oninput = () => {
+        rv.textContent = (+rate.value).toFixed(2) + '×';
+        if (TTS.isPlaying(host)) TTS.restart(TTS.at(), +rate.value);
+      };
+      host.querySelector('.va').onchange = () => {
+        if (TTS.isPlaying(host)) TTS.restart(TTS.at(), null);
+      };
+      host.querySelectorAll('.script p').forEach(p => {
+        p.onclick = () => {
+          const i = +p.dataset.i;
+          if (TTS.isPlaying(host)) TTS.restart(i, null); else TTS.start(host, segs, i);
+          play.textContent = '❚❚ 暫停';
+        };
+      });
+    });
+  }
+
+  // cumulative people index — dedupes across every run
+  (function(){
+    const seen = new Map();
+    D.runs.forEach(r => r.papers.forEach(p => arr(p.figures).forEach(f => {
+      if (!seen.has(f.name)) seen.set(f.name, {f: f, from: p.journal});
+    })));
+    if (!seen.size) return;
+    const items = [...seen.values()].sort((a, b) => a.f.name.localeCompare(b.f.name));
+    document.getElementById('people').innerHTML =
+      '<details class="idx"><summary>人物索引 · 累積 ' + items.length + ' 位（點開展開）</summary>' +
+      '<div class="idxbody">' + items.map(o =>
+        '<div class="idxi"><b>' + esc(o.f.name) + '</b><span>' + esc(o.f.inst) +
+        '</span><span>' + esc(o.f.stat) + '</span></div>').join('') +
+      '</div></details>';
+  })();
+
+  q.oninput = render; fj.onchange = render; fn.onchange = render;
+  render();
+})();
+</script>
+</body>
+</html>
