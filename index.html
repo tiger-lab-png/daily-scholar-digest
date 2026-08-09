@@ -132,6 +132,10 @@ details.pod summary{cursor:pointer;padding:11px 15px;font-size:13.5px;font-weigh
 details.pod summary::-webkit-details-marker{display:none}
 details.pod summary::before{content:"▸ ";color:var(--accent)}
 details.pod[open] summary::before{content:"▾ "}
+details.pod.full{margin-top:14px;background:var(--slate-soft);border-color:#dde3ec}
+details.pod.full summary{color:var(--slate)}
+details.pod.full summary::before{color:var(--slate)}
+details.pod.full .script p.hd{background:#e6ecf4;color:var(--slate)}
 .podbody{padding:0 15px 14px}
 .script{font-size:13px;line-height:1.75;background:#fff;
   border:1px solid var(--line);border-radius:8px;padding:12px 13px;max-height:420px;overflow:auto}
@@ -752,6 +756,46 @@ const TTS = (function(){
   const MAX = 150;                       // 只在句末切，長度接近但不超過此值
   let voices = [], cur = null;           // cur = { host, segs, i, rate, v }
 
+  // 為閱讀而寫的文字 → 為朗讀而讀。符號與數字轉成唸得出來的形式
+  function speakify(s){
+    return String(s || '')
+      .replace(/<\/?b>/g, '')
+      .replace(/(\d+(?:\.\d+)?)\s*%/g, '百分之 $1')
+      .replace(/\bh\s*=\s*(\d+)/gi, 'h 指數 $1')
+      .replace(/\bp\s*=\s*\./g, 'p 值 零點')
+      .replace(/\bIRR\b/g, '發生率比')
+      .replace(/(\d)\s*[–—~]\s*(\d)/g, '$1 到 $2')
+      .replace(/\s*[→]\s*/g, '，接著是，')
+      .replace(/\s*=\s*/g, ' 等於 ')
+      .replace(/\s*·\s*/g, '，')
+      .replace(/[《》〈〉「」『』]/g, '')
+      .replace(/[<>#*_`|]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // 把一篇的所有分析欄位組成可朗讀的長稿
+  function fullText(p){
+    const L = [];
+    const push = (h, body) => { if (body && body.length) { L.push('【' + h + '】'); L.push(body); } };
+    L.push('【' + speakify(p.title) + '】');
+    L.push(speakify(p.journal + '，' + p.date + '。' + (p.authors || '')));
+    push('研究全貌', (p.gist || []).map(speakify).join('\n'));
+    if (p.design) push('方法拆解', speakify(p.design));
+    push('文獻定位，它在跟誰對話', (p.lineage || []).map(speakify).join('\n'));
+    push('學者視角，貢獻與侷限', (p.critique || []).map(speakify).join('\n'));
+    push('被該期刊接受的關鍵', (p.accept || []).map(speakify).join('\n'));
+    if ((p.figures || []).length) push('領域人物誌，你該認識的人',
+      p.figures.map(f => speakify(f.name + '，' + f.role + '，' + f.inst + '。' + f.stat + '。')
+        + '\n' + speakify(f.famous) + '\n' + speakify('你該知道的是。' + f.must)).join('\n'));
+    if ((p.canon || []).length) push('知識點，這個領域的共同語言',
+      p.canon.map(c => speakify(c.term + '。' + c.t)).join('\n'));
+    if ((p.redo || []).length) push('如果我要重做這個研究',
+      p.redo.map((s, i) => speakify('第 ' + (i + 1) + ' 步。' + s.h + '。' + s.t)).join('\n'));
+    if (p.fit) push('投稿定位', speakify(p.fit));
+    return L.join('\n');
+  }
+
   // 播報稿 → [{hd:bool, text}]，只在句號問號驚嘆號處斷句，避免語調被切斷
   function segment(raw){
     const out = [];
@@ -864,7 +908,7 @@ const TTS = (function(){
   }
 
   return {
-    segment, fillSelects, start, stop,
+    segment, speakify, fullText, fillSelects, start, stop,
     supported: () => !!synth,
     isPlaying: host => !!cur && cur.host === host,
     at: () => cur ? cur.i : 0,
@@ -969,7 +1013,28 @@ if (window.speechSynthesis) {
 
     if (p.fit) h += '<div class="fit"><b>投稿定位 · </b>' + rich(p.fit) + '</div>';
 
+    // 整篇分析的朗讀版
+    const fsegs = TTS.segment(TTS.fullText(p));
+    h += '<details class="pod full"><summary>🎧 朗讀本篇完整分析 · 約 ' +
+      Math.max(1, Math.round(fsegs.reduce((a, s) => a + s.text.length, 0) / 300)) + ' 分鐘</summary>' +
+      '<div class="podbody"><div class="pwarn" style="display:none"></div>' + player() +
+      '<div class="script">' + fsegs.map((s, i) =>
+        '<p class="' + (s.hd ? 'hd' : '') + '" data-i="' + i + '">' + esc(s.text) + '</p>').join('') +
+      '</div>' +
+      '<button class="copy sec pbtn" style="margin-top:9px">複製全文</button>' +
+      '</div></details>';
+
     return h + '</article>';
+  }
+
+  function player(){
+    return '<div class="player">' +
+      '<button class="pbtn play">▶ 朗讀</button>' +
+      '<button class="pbtn sec stop" disabled>■ 停止</button>' +
+      '<label>語速 <input type="range" class="rate" min="0.6" max="1.6" step="0.05" value="1"><span class="rv">1.00×</span></label>' +
+      '<label>語音 <select class="va"></select></label>' +
+      '<span class="pstat">—</span>' +
+    '</div>';
   }
 
   function render(){
@@ -1003,14 +1068,7 @@ if (window.speechSynthesis) {
           esc(r.date) + ' ' + esc(r.slot) + ' · 約 ' +
           Math.round(r.podcast.length / 300) + ' 分鐘</summary>' +
           '<div class="podbody">' +
-          '<div class="pwarn" style="display:none"></div>' +
-          '<div class="player">' +
-            '<button class="pbtn play">▶ 播報</button>' +
-            '<button class="pbtn sec stop" disabled>■ 停止</button>' +
-            '<label>語速 <input type="range" class="rate" min="0.6" max="1.6" step="0.05" value="1"><span class="rv">1.00×</span></label>' +
-            '<label>語音 <select class="va"></select></label>' +
-            '<span class="pstat">—</span>' +
-          '</div>' +
+          '<div class="pwarn" style="display:none"></div>' + player() +
           '<div class="script">' + segs.map((s, i) =>
              '<p class="' + (s.hd ? 'hd' : '') + '" data-i="' + i + '">' + esc(s.text) + '</p>').join('') +
           '</div>' +
@@ -1050,8 +1108,9 @@ if (window.speechSynthesis) {
         warn.textContent = '目前只找到舊式本地語音，機械感較重。Windows 到「設定 → 時間與語言 → 語音 → 新增語音」安裝中文（繁體），即可取得 Microsoft 的自然語音；清單中標示 ★自然 的選項音質最好。';
       }
 
-      const rid = host.closest('.pod').dataset.rid;
-      const segs = TTS.segment((D.runs.find(r => r.date + '-' + r.slot === rid) || {}).podcast || '');
+      // 直接從 DOM 讀回段落，播報稿與全文分析共用同一套邏輯
+      const segs = [...host.querySelectorAll('.script p')]
+        .map(p => ({ hd: p.classList.contains('hd'), text: p.textContent }));
       const play = host.querySelector('.play');
       const rate = host.querySelector('.rate');
       const rv = host.querySelector('.rv');
