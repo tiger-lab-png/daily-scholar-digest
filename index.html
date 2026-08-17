@@ -16460,6 +16460,10 @@ if (window.speechSynthesis) {
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const ALLOW = /&lt;(\/?)b&gt;/g;                       // only <b> survives
   const rich = s => esc(s).replace(ALLOW, '<$1b>');
+  // 有些 doi 欄位存的是裸 DOI（如 "10.1007/xxx"），不是完整網址；
+  // 裸字串當 href 會被瀏覽器當成相對路徑，解析成本站底下的路徑而 404。一律正規化成完整 doi.org 網址。
+  const docUrl = d => { d = String(d==null?'':d).trim(); if (!d) return '#';
+    return /^https?:\/\//i.test(d) ? d : 'https://doi.org/' + d.replace(/^doi:\s*/i,''); };
 
   const all = [];
   D.runs.forEach(r => r.papers.forEach(p => all.push(Object.assign({}, p, {_run:r}))));
@@ -16502,7 +16506,7 @@ if (window.speechSynthesis) {
 
     let h = '<article class="card' + (p.fresh ? ' fresh' : '') + '">' +
       '<div class="meta">' + tags + '</div>' +
-      '<h3><a href="' + esc(p.doi) + '" target="_blank" rel="noopener">' + esc(p.title) + '</a></h3>' +
+      '<h3><a href="' + esc(docUrl(p.doi)) + '" target="_blank" rel="noopener">' + esc(p.title) + '</a></h3>' +
       '<div class="au">' + esc(p.authors) + '</div>';
 
     // 濃縮精華：沒展開時也看得到、聽得到
@@ -16683,7 +16687,7 @@ if (window.speechSynthesis) {
         html += '<div class="runhead" style="border-bottom-style:dashed"><h2>本輪快訊</h2>' +
                 '<span class="when">' + bs.length + ' 篇中等摘要</span></div>';
         html += '<div class="briefs">' + bs.map(b =>
-          '<div class="bf"><h4><a href="' + esc(b.doi) + '" target="_blank" rel="noopener">' +
+          '<div class="bf"><h4><a href="' + esc(docUrl(b.doi)) + '" target="_blank" rel="noopener">' +
           esc(b.title) + '</a></h4>' +
           '<div class="m">' + esc(b.journal) + ' · ' + esc(b.date) +
           (b.oa ? ' · 開放取用' : '') + ((b.topics||[]).length ? ' · ' + esc(b.topics.join('、')) : '') + '</div>' +
@@ -16703,8 +16707,8 @@ if (window.speechSynthesis) {
              '<p class="' + (s.hd ? 'hd' : '') + '" data-i="' + i + '">' + esc(s.text) + '</p>').join('') +
           '</div>' +
           '<button class="copy sec pbtn" style="margin-top:9px">複製全文</button>' +
-          '<div class="srcs">來源 DOI：' + ps.map(p => '<a href="' + esc(p.doi) + '" target="_blank" rel="noopener">' +
-              esc(p.doi.replace('https://doi.org/','')) + '</a>').join(' · ') + '</div>' +
+          '<div class="srcs">來源 DOI：' + ps.map(p => '<a href="' + esc(docUrl(p.doi)) + '" target="_blank" rel="noopener">' +
+              esc(String(p.doi||'').replace('https://doi.org/','')) + '</a>').join(' · ') + '</div>' +
           '</div></details>';
       }
     });
@@ -16844,7 +16848,7 @@ if (window.speechSynthesis) {
       idx.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).map(x =>
         '<div class="idxrow"><span class="d">' + esc(x.date) + '</span>' +
         '<span class="jn">' + esc((x.journal||'').slice(0,18)) + '</span>' +
-        '<span><a href="' + esc(x.doi) + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>' +
+        '<span><a href="' + esc(docUrl(x.doi)) + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>' +
         (covered.has(x.wid) ? ' <span class="tag oa">已摘要</span>' : '') + '</span></div>').join('') +
       '</div>';
     document.getElementById('people').appendChild(el);
